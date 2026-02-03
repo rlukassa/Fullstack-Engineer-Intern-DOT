@@ -1,0 +1,45 @@
+2. Rencana Fitur (Roadmap Pengerjaan)
+Sesuai instruksi tugas, berikut adalah fitur yang harus kamu bangun:
+
+A. Fitur Autentikasi
+Login Page: Halaman untuk masuk ke admin panel.
+
+Session Management: Menggunakan express-session. Jika belum login, user tidak bisa buka halaman CRUD (Gunakan Middleware).
+
+Logout: Menghapus session.
+
+B. CRUD Tabel 1: Manajemen Kereta (Trains)
+List: Menampilkan tabel daftar nama kereta, tipe (Eksekutif/Ekonomi), dan kapasitas.
+
+Create: Form tambah kereta baru.
+
+Update: Edit data kereta yang sudah ada.
+
+Delete: Hapus data kereta (Pastikan ada penanganan jika kereta sudah punya jadwal).
+
+C. CRUD Tabel 2: Manajemen Jadwal (Schedules) - [Relasi One-to-Many]
+List & Detail: Menampilkan jadwal perjalanan. Di sini kamu menunjukkan relasi dengan menampilkan Nama Kereta (dari tabel Trains).
+
+Search (Poin 4): Input pencarian di atas tabel jadwal untuk mencari berdasarkan Stasiun Tujuan atau Nama Kereta.
+
+Create with Relation: Saat tambah jadwal, admin memilih kereta melalui Dropdown (Select Option) yang datanya diambil dari tabel Trains.
+
+D. Error Handling & Validation (Poin 9f)
+Gunakan ValidationPipe untuk memastikan harga tiket tidak minus dan tanggal keberangkatan valid.
+
+Gunakan ExceptionFilter untuk menangkap error database (misal: menghapus kereta yang masih digunakan di jadwal) dan menampilkan halaman error yang sopan.
+
+3. Tips "Poin Bonus" dalam Pengerjaan
+Response Berbentuk Page (Poin 5): Pastikan setiap Controller mengakhiri fungsinya dengan @Render(). Jangan mengembalikan JSON murni di browser, karena instruksinya adalah aplikasi MVC berbasis halaman.
+
+Pencarian Data (Search): Di dalam schedules.service.ts, gunakan operator ILike (Case Insensitive Like) agar pencarian lebih fleksibel:
+
+TypeScript
+// Contoh logic di Service
+async search(query: string) {
+  return this.repo.find({
+    where: { destination_station: ILike(`%${query}%`) },
+    relations: ['train'] // Sertakan data kereta agar bisa ditampilkan di view
+  });
+}
+Readme yang Bagus (Poin 8): Jangan lupa sertakan instruksi docker-compose up -d di Readme agar penilai bisa menjalankan database kamu dengan satu perintah.

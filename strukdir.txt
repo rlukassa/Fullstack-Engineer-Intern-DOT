@@ -1,0 +1,33 @@
+src/
+├── auth/                    # Fitur Login & Session
+│   ├── auth.module.ts
+│   ├── auth.controller.ts   # Menangani GET /login dan POST /login
+│   └── auth.service.ts      # Validasi email & password
+├── trains/                  # Tabel 1 (Parent)
+│   ├── entities/
+│   │   └── train.entity.ts
+│   ├── dto/
+│   │   └── create-train.dto.ts
+│   ├── trains.module.ts
+│   ├── trains.controller.ts # CRUD Kereta
+│   └── trains.service.ts
+├── schedules/               # Tabel 2 (Child - Relasi Many-to-One ke Train)
+│   ├── entities/
+│   │   └── schedule.entity.ts
+│   ├── dto/
+│   │   └── create-schedule.dto.ts
+│   ├── schedules.module.ts
+│   ├── schedules.controller.ts # CRUD Jadwal + Fitur Pencarian
+│   └── schedules.service.ts
+├── common/                  # Helper Global
+│   ├── filters/
+│   │   └── http-exception.filter.ts # Error Handling (Poin 9f)
+│   └── middleware/
+│       └── auth.middleware.ts       # Proteksi halaman Admin
+├── main.ts                  # Setup View Engine (HBS) & Session
+└── app.module.ts
+views/                       # Folder Template HTML (Pattern MVC)
+├── layouts/                 # Header, Footer, Sidebar
+├── auth/                    # Halaman Login
+├── trains/                  # List, Detail, Form Create/Edit Kereta
+└── schedules/               # List, Detail, Form Create/Edit Jadwal

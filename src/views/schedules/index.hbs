@@ -1,0 +1,29 @@
+<h1>Schedules</h1>
+<table style="width:100%; background:white; border-collapse:collapse;">
+    <thead>
+        <tr style="background:#764ba2; color:white;">
+            <th style="padding:12px; border:1px solid #ddd;">Train Number</th>
+            <th style="padding:12px; border:1px solid #ddd;">Date</th>
+            <th style="padding:12px; border:1px solid #ddd;">Departure</th>
+            <th style="padding:12px; border:1px solid #ddd;">Arrival</th>
+            <th style="padding:12px; border:1px solid #ddd;">Price</th>
+            <th style="padding:12px; border:1px solid #ddd;">Status</th>
+            <th style="padding:12px; border:1px solid #ddd;">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each schedules}}
+        <tr style="border:1px solid #ddd;">
+            <td style="padding:12px;">{{this.trainNumber}}</td>
+            <td style="padding:12px;">{{this.departureDate}}</td>
+            <td style="padding:12px;">{{this.departureTime}}</td>
+            <td style="padding:12px;">{{this.arrivalTime}}</td>
+            <td style="padding:12px;">₱{{this.price}}</td>
+            <td style="padding:12px;">{{this.status}}</td>
+            <td style="padding:12px;">
+                <a href="/schedules/{{this.id}}" style="color:#764ba2; text-decoration:none;">View</a>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>

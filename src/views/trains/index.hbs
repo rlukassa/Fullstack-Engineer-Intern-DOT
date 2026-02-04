@@ -1,0 +1,27 @@
+<h1>Trains Management</h1>
+<table style="width:100%; background:white; border-collapse:collapse;">
+    <thead>
+        <tr style="background:#667eea; color:white;">
+            <th style="padding:12px; border:1px solid #ddd;">Train Name</th>
+            <th style="padding:12px; border:1px solid #ddd;">Train Number</th>
+            <th style="padding:12px; border:1px solid #ddd;">Source</th>
+            <th style="padding:12px; border:1px solid #ddd;">Destination</th>
+            <th style="padding:12px; border:1px solid #ddd;">Available Seats</th>
+            <th style="padding:12px; border:1px solid #ddd;">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each trains}}
+        <tr style="border:1px solid #ddd;">
+            <td style="padding:12px;">{{this.name}}</td>
+            <td style="padding:12px;">{{this.trainNumber}}</td>
+            <td style="padding:12px;">{{this.source}}</td>
+            <td style="padding:12px;">{{this.destination}}</td>
+            <td style="padding:12px;">{{this.availableSeats}}</td>
+            <td style="padding:12px;">
+                <a href="/trains/{{this.id}}" style="color:#667eea; text-decoration:none;">View</a>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>

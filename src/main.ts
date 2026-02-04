@@ -5,16 +5,12 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-
-  // Configure Handlebars view engine
   app.setBaseViewsDir(join(__dirname, '..', 'src', 'views'));
   app.setViewEngine('hbs');
-
-  // Serve static files
   app.useStaticAssets(join(__dirname, '..', 'public'));
 
   const port = process.env.PORT ?? 3000;
   await app.listen(port);
-  console.log(`✓ Application is running on: http://localhost:${port}`);
+  console.log(`Application is running on: http://localhost:${port}`);
 }
 bootstrap();

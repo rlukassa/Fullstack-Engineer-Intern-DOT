@@ -1,0 +1,37 @@
+<div class="page-header">
+    <a href="/stations" class="btn btn-secondary btn-sm" style="margin-bottom: 15px;">
+        <i class="fas fa-arrow-left"></i> Back to Stations
+    </a>
+    <h1><i class="fas fa-map-marker-alt"></i> Station Details</h1>
+</div>
+
+{{#if station}}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{station.name}}</h3>
+        <span class="badge badge-info">{{station.code}}</span>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+        <div>
+            <label style="color: #888; font-size: 0.85rem; display: block; margin-bottom: 5px;">Station ID</label>
+            <p style="color: #fff; font-size: 1.1rem; font-weight: 600;">{{station.id}}</p>
+        </div>
+        <div>
+            <label style="color: #888; font-size: 0.85rem; display: block; margin-bottom: 5px;">Station Name</label>
+            <p style="color: #fff; font-size: 1.1rem; font-weight: 600;">{{station.name}}</p>
+        </div>
+        <div>
+            <label style="color: #888; font-size: 0.85rem; display: block; margin-bottom: 5px;">Station Code</label>
+            <p style="color: #fff; font-size: 1.1rem; font-weight: 600;">{{station.code}}</p>
+        </div>
+    </div>
+</div>
+{{else}}
+<div class="card">
+    <div class="empty-state">
+        <i class="fas fa-exclamation-circle"></i>
+        <h3>Station Not Found</h3>
+        <p>The station you're looking for doesn't exist.</p>
+    </div>
+</div>
+{{/if}}

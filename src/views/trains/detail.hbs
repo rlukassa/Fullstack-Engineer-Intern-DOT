@@ -1,10 +1,55 @@
-<h1>Train Detail</h1>
-<div style="background:white; padding:2rem; border-radius:8px;">
-    <p><strong>Name:</strong> {{train.name}}</p>
-    <p><strong>Train Number:</strong> {{train.trainNumber}}</p>
-    <p><strong>Source:</strong> {{train.source}}</p>
-    <p><strong>Destination:</strong> {{train.destination}}</p>
-    <p><strong>Total Seats:</strong> {{train.totalSeats}}</p>
-    <p><strong>Available Seats:</strong> {{train.availableSeats}}</p>
-    <a href="/trains" style="color:#667eea; text-decoration:none;">Back</a>
+<div class="page-header">
+    <a href="/trains" class="btn btn-secondary btn-sm" style="margin-bottom: 15px;">
+        <i class="fas fa-arrow-left"></i> Back to Trains
+    </a>
+    <h1><i class="fas fa-train"></i> Train Details</h1>
 </div>
+
+{{#if train}}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">{{train.name}}</h3>
+        {{#if (eq train.type "EKSEKUTIF")}}
+        <span class="badge badge-success">{{train.type}}</span>
+        {{else if (eq train.type "BISNIS")}}
+        <span class="badge badge-warning">{{train.type}}</span>
+        {{else}}
+        <span class="badge badge-info">{{train.type}}</span>
+        {{/if}}
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+        <div>
+            <label style="color: #888; font-size: 0.85rem; display: block; margin-bottom: 5px;">Train ID</label>
+            <p style="color: #fff; font-size: 1.1rem; font-weight: 600;">{{train.id}}</p>
+        </div>
+        <div>
+            <label style="color: #888; font-size: 0.85rem; display: block; margin-bottom: 5px;">Train Name</label>
+            <p style="color: #fff; font-size: 1.1rem; font-weight: 600;">{{train.name}}</p>
+        </div>
+        <div>
+            <label style="color: #888; font-size: 0.85rem; display: block; margin-bottom: 5px;">Type</label>
+            <p style="color: #fff; font-size: 1.1rem; font-weight: 600;">{{train.type}}</p>
+        </div>
+        <div>
+            <label style="color: #888; font-size: 0.85rem; display: block; margin-bottom: 5px;">Total Seats</label>
+            <p style="color: #fff; font-size: 1.1rem; font-weight: 600;">{{train.totalSeats}} seats</p>
+        </div>
+        <div>
+            <label style="color: #888; font-size: 0.85rem; display: block; margin-bottom: 5px;">Created At</label>
+            <p style="color: #fff; font-size: 1.1rem; font-weight: 600;">{{formatDate train.createdAt}}</p>
+        </div>
+        <div>
+            <label style="color: #888; font-size: 0.85rem; display: block; margin-bottom: 5px;">Last Updated</label>
+            <p style="color: #fff; font-size: 1.1rem; font-weight: 600;">{{formatDate train.updatedAt}}</p>
+        </div>
+    </div>
+</div>
+{{else}}
+<div class="card">
+    <div class="empty-state">
+        <i class="fas fa-exclamation-circle"></i>
+        <h3>Train Not Found</h3>
+        <p>The train you're looking for doesn't exist.</p>
+    </div>
+</div>
+{{/if}}

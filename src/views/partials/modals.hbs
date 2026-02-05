@@ -1,0 +1,156 @@
+<!-- Modal Partial -->
+<style>
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(5px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .modal-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .modal {
+        background: linear-gradient(145deg, #1a1a1a 0%, #252525 100%);
+        border-radius: 20px;
+        padding: 30px;
+        max-width: 500px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        border: 1px solid #333;
+        box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+        transform: scale(0.9) translateY(-20px);
+        transition: all 0.3s ease;
+    }
+    
+    .modal-overlay.active .modal {
+        transform: scale(1) translateY(0);
+    }
+    
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #333;
+    }
+    
+    .modal-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #fff;
+    }
+    
+    .modal-close {
+        background: none;
+        border: none;
+        color: #666;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 5px;
+        transition: all 0.3s ease;
+        border-radius: 8px;
+    }
+    
+    .modal-close:hover {
+        color: #fff;
+        background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .modal-body {
+        color: #ccc;
+        line-height: 1.6;
+    }
+    
+    .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 25px;
+        padding-top: 20px;
+        border-top: 1px solid #333;
+    }
+    
+    /* Form inside Modal */
+    .modal .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .modal .form-label {
+        display: block;
+        margin-bottom: 8px;
+        color: #ccc;
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+    
+    .modal .form-control {
+        width: 100%;
+        padding: 14px 16px;
+        border: 2px solid #333;
+        border-radius: 10px;
+        background: #111;
+        color: #fff;
+        font-family: 'Poppins', sans-serif;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .modal .form-control:focus {
+        outline: none;
+        border-color: #fef08a;
+        box-shadow: 0 0 20px rgba(254, 240, 138, 0.15);
+    }
+    
+    .modal .form-control::placeholder {
+        color: #555;
+    }
+    
+    .modal select.form-control {
+        cursor: pointer;
+    }
+</style>
+
+<script>
+    function openModal(modalId) {
+        document.getElementById(modalId).classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    
+    // Close modal when clicking outside
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('modal-overlay')) {
+            e.target.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+    
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.modal-overlay.active').forEach(modal => {
+                modal.classList.remove('active');
+            });
+            document.body.style.overflow = '';
+        }
+    });
+</script>

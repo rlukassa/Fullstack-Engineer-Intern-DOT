@@ -1,27 +1,157 @@
-<h1>Trains Management</h1>
-<table style="width:100%; background:white; border-collapse:collapse;">
-    <thead>
-        <tr style="background:#667eea; color:white;">
-            <th style="padding:12px; border:1px solid #ddd;">Train Name</th>
-            <th style="padding:12px; border:1px solid #ddd;">Train Number</th>
-            <th style="padding:12px; border:1px solid #ddd;">Source</th>
-            <th style="padding:12px; border:1px solid #ddd;">Destination</th>
-            <th style="padding:12px; border:1px solid #ddd;">Available Seats</th>
-            <th style="padding:12px; border:1px solid #ddd;">Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        {{#each trains}}
-        <tr style="border:1px solid #ddd;">
-            <td style="padding:12px;">{{this.name}}</td>
-            <td style="padding:12px;">{{this.trainNumber}}</td>
-            <td style="padding:12px;">{{this.source}}</td>
-            <td style="padding:12px;">{{this.destination}}</td>
-            <td style="padding:12px;">{{this.availableSeats}}</td>
-            <td style="padding:12px;">
-                <a href="/trains/{{this.id}}" style="color:#667eea; text-decoration:none;">View</a>
-            </td>
-        </tr>
-        {{/each}}
-    </tbody>
-</table>
+<div class="page-header">
+    <h1><i class="fas fa-train"></i> Trains Management</h1>
+    <p>Manage train fleet in the system</p>
+</div>
+
+{{#if (eq userRole "ADMIN")}}
+<div class="card" style="margin-bottom: 30px;">
+    <div class="card-header">
+        <h3 class="card-title"><i class="fas fa-plus-circle"></i> Add New Train</h3>
+    </div>
+    <form action="/trains" method="POST">
+        <div style="display: grid; grid-template-columns: 1fr 1fr 150px auto; gap: 15px; align-items: end;">
+            <div class="form-group" style="margin: 0;">
+                <label class="form-label">Train Name</label>
+                <input type="text" name="name" class="search-input" placeholder="e.g., Argo Bromo" required maxlength="20">
+            </div>
+            <div class="form-group" style="margin: 0;">
+                <label class="form-label">Type</label>
+                <select name="type" class="search-input" required>
+                    <option value="">Select Type</option>
+                    <option value="EKSEKUTIF">Eksekutif</option>
+                    <option value="BISNIS">Bisnis</option>
+                    <option value="EKONOMI">Ekonomi</option>
+                </select>
+            </div>
+            <div class="form-group" style="margin: 0;">
+                <label class="form-label">Total Seats</label>
+                <input type="number" name="totalSeats" class="search-input" placeholder="e.g., 50" required min="1">
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add Train
+            </button>
+        </div>
+    </form>
+</div>
+{{/if}}
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title"><i class="fas fa-list"></i> All Trains</h3>
+        <span class="badge badge-info">{{trains.length}} trains</span>
+    </div>
+    
+    {{#if trains.length}}
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Train Name</th>
+                    <th>Type</th>
+                    <th>Total Seats</th>
+                    <th>Created</th>
+                    {{#if (eq userRole "ADMIN")}}
+                    <th>Actions</th>
+                    {{/if}}
+                </tr>
+            </thead>
+            <tbody>
+                {{#each trains}}
+                <tr>
+                    <td>{{this.id}}</td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="width: 40px; height: 40px; background: rgba(254, 240, 138, 0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-train" style="color: #fef08a;"></i>
+                            </div>
+                            <strong>{{this.name}}</strong>
+                        </div>
+                    </td>
+                    <td>
+                        {{#if (eq this.type "EKSEKUTIF")}}
+                        <span class="badge badge-success">{{this.type}}</span>
+                        {{else if (eq this.type "BISNIS")}}
+                        <span class="badge badge-warning">{{this.type}}</span>
+                        {{else}}
+                        <span class="badge badge-info">{{this.type}}</span>
+                        {{/if}}
+                    </td>
+                    <td>{{this.totalSeats}} seats</td>
+                    <td>{{formatDate this.createdAt}}</td>
+                    {{#if (eq ../userRole "ADMIN")}}
+                    <td>
+                        <div class="action-btns">
+                            <a href="/trains/{{this.id}}" class="btn-icon edit" title="View Details">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <button class="btn-icon delete" onclick="deleteTrain({{this.id}}, '{{this.name}}')" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                    {{/if}}
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+    {{else}}
+    <div class="empty-state">
+        <i class="fas fa-train"></i>
+        <h3>Masih Kosong</h3>
+        <p>Menunggu Admin menambahkan data kereta</p>
+    </div>
+    {{/if}}
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title"><i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i> Confirm Delete</h3>
+            <button class="modal-close" onclick="closeModal('deleteModal')">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to delete train "<span id="deleteTrainName"></span>"?</p>
+            <p style="color: #888; font-size: 0.9rem; margin-top: 10px;">This action cannot be undone. Make sure this train is not used in any schedules.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('deleteModal')">Cancel</button>
+            <button class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let trainToDelete = null;
+    
+    function deleteTrain(id, name) {
+        trainToDelete = id;
+        document.getElementById('deleteTrainName').textContent = name;
+        openModal('deleteModal');
+    }
+    
+    document.getElementById('confirmDeleteBtn').addEventListener('click', async function() {
+        if (trainToDelete) {
+            try {
+                const response = await fetch(`/trains/${trainToDelete}`, {
+                    method: 'DELETE',
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    window.location.href = '/trains?message=Train deleted successfully&messageType=success';
+                } else {
+                    closeModal('deleteModal');
+                    showPopup('danger', result.message || 'Failed to delete train. It may be used in schedules.');
+                }
+            } catch (error) {
+                closeModal('deleteModal');
+                showPopup('danger', 'Failed to delete train');
+            }
+        }
+    });
+</script>

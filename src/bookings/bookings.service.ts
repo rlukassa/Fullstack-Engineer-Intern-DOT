@@ -18,7 +18,17 @@ export class BookingsService {
 
   async findAll() {
     return this.bookingsRepository.find({
-      relations: ['user', 'schedule'],
+      relations: ['user', 'schedule', 'schedule.train', 'schedule.originStation', 'schedule.destinationStation'],
+      order: {
+        createdAt: 'DESC',
+      },
+    });
+  }
+
+  async findByUser(userId: number) {
+    return this.bookingsRepository.find({
+      where: { user: { id: userId } },
+      relations: ['user', 'schedule', 'schedule.train', 'schedule.originStation', 'schedule.destinationStation'],
       order: {
         createdAt: 'DESC',
       },
@@ -28,7 +38,7 @@ export class BookingsService {
   async findOne(id: number) {
     return this.bookingsRepository.findOne({
       where: { id },
-      relations: ['user', 'schedule'],
+      relations: ['user', 'schedule', 'schedule.train', 'schedule.originStation', 'schedule.destinationStation'],
     });
   }
 

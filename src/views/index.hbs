@@ -1,6 +1,187 @@
-<h1>Welcome to Train Booking System</h1>
-<div style="background:white; padding:2rem; border-radius:8px; text-align:center;">
-    <p style="margin-bottom:1rem;">Select an option below:</p>
-    <a href="/trains" style="display:inline-block; background:#667eea; color:white; padding:12px 24px; border-radius:4px; text-decoration:none; margin-right:1rem;">Manage Trains</a>
-    <a href="/schedules" style="display:inline-block; background:#764ba2; color:white; padding:12px 24px; border-radius:4px; text-decoration:none;">Manage Schedules</a>
+<div class="page-header">
+    <h1>
+        {{#if isLoggedIn}}
+            Welcome back, {{username}}! 👋
+        {{else}}
+            Welcome to SobatKereta!
+        {{/if}}
+    </h1>
+    <p>
+        {{#if isLoggedIn}}
+            Manage your train bookings and schedules from the dashboard below.
+        {{else}}
+            Please <a href="/auth/login" style="color: #fef08a;">login</a> to access all features.
+        {{/if}}
+    </p>
 </div>
+
+{{#if isLoggedIn}}
+    <!-- Stats Cards -->
+    <div class="grid grid-4" style="margin-bottom: 30px;">
+        <div class="stat-card" style="animation-delay: 0.1s;">
+            <div class="icon yellow">
+                <i class="fas fa-train"></i>
+            </div>
+            <h3 id="trainsCount">-</h3>
+            <p>Total Trains</p>
+        </div>
+        <div class="stat-card" style="animation-delay: 0.2s;">
+            <div class="icon blue">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+            <h3 id="schedulesCount">-</h3>
+            <p>Active Schedules</p>
+        </div>
+        <div class="stat-card" style="animation-delay: 0.3s;">
+            <div class="icon green">
+                <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <h3 id="stationsCount">-</h3>
+            <p>Stations</p>
+        </div>
+        <div class="stat-card" style="animation-delay: 0.4s;">
+            <div class="icon purple">
+                <i class="fas fa-ticket-alt"></i>
+            </div>
+            <h3 id="bookingsCount">-</h3>
+            <p>Total Bookings</p>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="card" style="margin-bottom: 30px;">
+        <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-bolt"></i> Quick Actions</h3>
+        </div>
+        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+            <a href="/trains" class="btn btn-primary">
+                <i class="fas fa-train"></i> View Trains
+            </a>
+            <a href="/schedules" class="btn btn-primary">
+                <i class="fas fa-calendar-alt"></i> View Schedules
+            </a>
+            <a href="/stations" class="btn btn-primary">
+                <i class="fas fa-map-marker-alt"></i> View Stations
+            </a>
+            {{#if (eq userRole "ADMIN")}}
+            <a href="/bookings" class="btn btn-secondary">
+                <i class="fas fa-ticket-alt"></i> Manage Bookings
+            </a>
+            {{/if}}
+        </div>
+    </div>
+
+    <!-- Recent Activity Section -->
+    <div class="grid grid-2">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-train"></i> Recent Trains</h3>
+                <a href="/trains" class="btn btn-sm btn-ghost">View All</a>
+            </div>
+            <div id="recentTrains">
+                <div class="empty-state" style="padding: 40px 20px;">
+                    <i class="fas fa-train"></i>
+                    <h3>Masih Kosong</h3>
+                    <p>Menunggu Admin menambahkan data kereta</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-calendar-alt"></i> Upcoming Schedules</h3>
+                <a href="/schedules" class="btn btn-sm btn-ghost">View All</a>
+            </div>
+            <div id="recentSchedules">
+                <div class="empty-state" style="padding: 40px 20px;">
+                    <i class="fas fa-calendar-alt"></i>
+                    <h3>Masih Kosong</h3>
+                    <p>Menunggu Admin menambahkan jadwal</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{{else}}
+    <!-- Guest View -->
+    <div class="card" style="text-align: center; padding: 60px 40px;">
+        <div style="margin-bottom: 30px;">
+            <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #fef08a 0%, #fde047 100%); border-radius: 24px; display: flex; align-items: center; justify-content: center; margin: 0 auto; animation: pulse 2s infinite;">
+                <i class="fas fa-train" style="font-size: 3rem; color: #000;"></i>
+            </div>
+        </div>
+        <h2 style="color: #fff; font-size: 2rem; margin-bottom: 15px;">Book Your Train Tickets</h2>
+        <p style="color: #888; max-width: 500px; margin: 0 auto 30px; line-height: 1.6;">
+            Experience seamless train booking with our modern platform. View schedules, compare prices, and book your tickets with ease.
+        </p>
+        <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+            <a href="/auth/login" class="btn btn-primary btn-lg">
+                <i class="fas fa-sign-in-alt"></i> Login to Continue
+            </a>
+            <a href="/auth/register" class="btn btn-secondary btn-lg">
+                <i class="fas fa-user-plus"></i> Create Account
+            </a>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="grid grid-3" style="margin-top: 30px;">
+        <div class="card" style="text-align: center;">
+            <div style="width: 60px; height: 60px; background: rgba(254, 240, 138, 0.2); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                <i class="fas fa-search" style="font-size: 1.5rem; color: #fef08a;"></i>
+            </div>
+            <h3 style="color: #fff; margin-bottom: 10px;">Easy Search</h3>
+            <p style="color: #888; font-size: 0.9rem;">Find trains by destination, date, or train type with our powerful search.</p>
+        </div>
+        <div class="card" style="text-align: center;">
+            <div style="width: 60px; height: 60px; background: rgba(34, 197, 94, 0.2); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                <i class="fas fa-shield-alt" style="font-size: 1.5rem; color: #22c55e;"></i>
+            </div>
+            <h3 style="color: #fff; margin-bottom: 10px;">Secure Booking</h3>
+            <p style="color: #888; font-size: 0.9rem;">Your booking data is safe with our secure authentication system.</p>
+        </div>
+        <div class="card" style="text-align: center;">
+            <div style="width: 60px; height: 60px; background: rgba(59, 130, 246, 0.2); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                <i class="fas fa-clock" style="font-size: 1.5rem; color: #3b82f6;"></i>
+            </div>
+            <h3 style="color: #fff; margin-bottom: 10px;">Real-time Updates</h3>
+            <p style="color: #888; font-size: 0.9rem;">Get instant updates on train schedules and availability.</p>
+        </div>
+    </div>
+{{/if}}
+
+<style>
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(254, 240, 138, 0.4); }
+        50% { transform: scale(1.05); box-shadow: 0 0 30px rgba(254, 240, 138, 0.3); }
+    }
+    
+    .stat-card {
+        animation: bounceIn 0.5s ease-out both;
+    }
+    
+    @keyframes bounceIn {
+        0% { transform: scale(0.8); opacity: 0; }
+        70% { transform: scale(1.05); }
+        100% { transform: scale(1); opacity: 1; }
+    }
+</style>
+
+<script>
+    // Fetch stats on page load
+    {{#if isLoggedIn}}
+    document.addEventListener('DOMContentLoaded', async function() {
+        try {
+            // These would be API calls in a real app
+            // For now, we'll show placeholder data
+            setTimeout(() => {
+                document.getElementById('trainsCount').textContent = '0';
+                document.getElementById('schedulesCount').textContent = '0';
+                document.getElementById('stationsCount').textContent = '0';
+                document.getElementById('bookingsCount').textContent = '0';
+            }, 500);
+        } catch (error) {
+            console.error('Failed to fetch stats:', error);
+        }
+    });
+    {{/if}}
+</script>

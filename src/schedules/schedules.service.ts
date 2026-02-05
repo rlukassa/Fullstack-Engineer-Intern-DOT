@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, ILike } from 'typeorm';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { Schedule } from './entities/schedule.entity';
 
@@ -18,10 +18,24 @@ export class SchedulesService {
 
   async findAll() {
     return this.schedulesRepository.find({
+      relations: ['train', 'originStation', 'destinationStation'],
       order: {
-        createdAt: 'DESC',
+        departureTime: 'ASC',
       },
     });
+  }
+
+  async search(query: string) {
+    return this.schedulesRepository
+      .createQueryBuilder('schedule')
+      .leftJoinAndSelect('schedule.train', 'train')
+      .leftJoinAndSelect('schedule.originStation', 'originStation')
+      .leftJoinAndSelect('schedule.destinationStation', 'destinationStation')
+      .where('train.name ILIKE :query', { query: `%${query}%` })
+      .orWhere('originStation.name ILIKE :query', { query: `%${query}%` })
+      .orWhere('destinationStation.name ILIKE :query', { query: `%${query}%` })
+      .orderBy('schedule.departureTime', 'ASC')
+      .getMany();
   }
 
   async findOne(id: number) {
@@ -38,5 +52,9 @@ export class SchedulesService {
 
   async remove(id: string) {
     return this.schedulesRepository.delete(id);
+  }
+
+  async count() {
+    return this.schedulesRepository.count();
   }
 }

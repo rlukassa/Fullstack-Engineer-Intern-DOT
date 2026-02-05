@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Train Booking System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #0a0a0a;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+        
+        .bg-animation span {
+            position: absolute;
+            display: block;
+            width: 20px;
+            height: 20px;
+            background: rgba(254, 240, 138, 0.1);
+            animation: move 25s infinite;
+            bottom: -150px;
+            border-radius: 50%;
+        }
+        
+        .bg-animation span:nth-child(1) { left: 25%; width: 80px; height: 80px; animation-delay: 0s; }
+        .bg-animation span:nth-child(2) { left: 10%; width: 20px; height: 20px; animation-delay: 2s; animation-duration: 12s; }
+        .bg-animation span:nth-child(3) { left: 70%; width: 20px; height: 20px; animation-delay: 4s; }
+        .bg-animation span:nth-child(4) { left: 40%; width: 60px; height: 60px; animation-delay: 0s; animation-duration: 18s; }
+        .bg-animation span:nth-child(5) { left: 65%; width: 20px; height: 20px; animation-delay: 0s; }
+        .bg-animation span:nth-child(6) { left: 75%; width: 110px; height: 110px; animation-delay: 3s; }
+        .bg-animation span:nth-child(7) { left: 35%; width: 150px; height: 150px; animation-delay: 7s; }
+        .bg-animation span:nth-child(8) { left: 50%; width: 25px; height: 25px; animation-delay: 15s; animation-duration: 45s; }
+        .bg-animation span:nth-child(9) { left: 20%; width: 15px; height: 15px; animation-delay: 2s; animation-duration: 35s; }
+        .bg-animation span:nth-child(10) { left: 85%; width: 150px; height: 150px; animation-delay: 0s; animation-duration: 11s; }
+        
+        @keyframes move {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-1000px) rotate(720deg); opacity: 0; }
+        }
+        
+        /* Register Container */
+        .register-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 500px;
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .register-box {
+            background: linear-gradient(145deg, #111111 0%, #1a1a1a 100%);
+            border-radius: 24px;
+            padding: 40px;
+            border: 1px solid #2a2a2a;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+        }
+        
+        .register-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+        
+        .register-logo {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #fef08a 0%, #fde047 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(254, 240, 138, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 0 30px rgba(254, 240, 138, 0.3); }
+        }
+        
+        .register-logo i {
+            font-size: 2rem;
+            color: #000;
+        }
+        
+        .register-header h1 {
+            color: #fff;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .register-header p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        /* Form */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #888;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .form-label .required {
+            color: #ef4444;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .input-wrapper i.input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #555;
+            transition: color 0.3s ease;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 16px 16px 16px 48px;
+            border: 2px solid #2a2a2a;
+            border-radius: 12px;
+            background: #0a0a0a;
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #fef08a;
+            box-shadow: 0 0 20px rgba(254, 240, 138, 0.15);
+        }
+        
+        .form-control:focus + i.input-icon,
+        .form-control:focus ~ i.input-icon {
+            color: #fef08a;
+        }
+        
+        .form-control::placeholder {
+            color: #444;
+        }
+        
+        /* Password Toggle */
+        .password-toggle {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #555;
+            cursor: pointer;
+            padding: 5px;
+            transition: color 0.3s ease;
+        }
+        
+        .password-toggle:hover {
+            color: #fef08a;
+        }
+        
+        /* Password Strength Indicator */
+        .password-strength {
+            margin-top: 10px;
+            display: flex;
+            gap: 5px;
+        }
+        
+        .strength-bar {
+            flex: 1;
+            height: 4px;
+            background: #2a2a2a;
+            border-radius: 2px;
+            transition: background 0.3s ease;
+        }
+        
+        .strength-bar.weak { background: #ef4444; }
+        .strength-bar.medium { background: #eab308; }
+        .strength-bar.strong { background: #22c55e; }
+        
+        .strength-text {
+            font-size: 0.8rem;
+            margin-top: 5px;
+            color: #666;
+        }
+        
+        /* Submit Button */
+        .btn-register {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            background: #ffffff;
+            color: #000;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-register:hover {
+            background: #fef08a;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(254, 240, 138, 0.3);
+        }
+        
+        .btn-register:active {
+            transform: translateY(0);
+        }
+        
+        /* Links */
+        .register-footer {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid #2a2a2a;
+        }
+        
+        .register-footer p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .register-footer a {
+            color: #fef08a;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        
+        .register-footer a:hover {
+            color: #fde047;
+        }
+        
+        .back-home {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #666;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-top: 15px;
+            transition: color 0.3s ease;
+        }
+        
+        .back-home:hover {
+            color: #fef08a;
+        }
+        
+        /* Error message */
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: shake 0.5s ease-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        /* Role Badge */
+        .role-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #22c55e;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        
+        .role-badge i {
+            font-size: 1rem;
+        }
+        
+        /* Form Row */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        @media (max-width: 500px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+    </div>
+    
+    <div class="register-container">
+        <div class="register-box">
+            <div class="register-header">
+                <div class="register-logo">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <h1>Create Account</h1>
+                <p>Join us and start booking your train tickets</p>
+            </div>
+            
+            {{#if error}}
+            <div class="error-message">
+                <i class="fas fa-exclamation-circle"></i>
+                {{error}}
+            </div>
+            {{/if}}
+            
+            <div class="role-badge">
+                <i class="fas fa-user-check"></i>
+                You will be registered as a <strong>Customer</strong>
+            </div>
+            
+            <form action="/auth/register" method="POST" id="registerForm">
+                <div class="form-group">
+                    <label class="form-label">Username <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            name="username" 
+                            placeholder="Choose a username"
+                            required
+                            minlength="3"
+                            maxlength="50"
+                            autocomplete="username"
+                        >
+                        <i class="fas fa-user input-icon"></i>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Email Address <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="email" 
+                            class="form-control" 
+                            name="email" 
+                            placeholder="Enter your email"
+                            required
+                            autocomplete="email"
+                        >
+                        <i class="fas fa-envelope input-icon"></i>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Password <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="password" 
+                            class="form-control" 
+                            name="password" 
+                            id="password"
+                            placeholder="Create a password"
+                            required
+                            minlength="4"
+                            autocomplete="new-password"
+                            oninput="checkPasswordStrength(this.value)"
+                        >
+                        <i class="fas fa-lock input-icon"></i>
+                        <button type="button" class="password-toggle" onclick="togglePassword('password', 'toggleIcon1')">
+                            <i class="fas fa-eye" id="toggleIcon1"></i>
+                        </button>
+                    </div>
+                    <div class="password-strength">
+                        <div class="strength-bar" id="bar1"></div>
+                        <div class="strength-bar" id="bar2"></div>
+                        <div class="strength-bar" id="bar3"></div>
+                        <div class="strength-bar" id="bar4"></div>
+                    </div>
+                    <div class="strength-text" id="strengthText"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Confirm Password <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="password" 
+                            class="form-control" 
+                            name="confirmPassword" 
+                            id="confirmPassword"
+                            placeholder="Confirm your password"
+                            required
+                            autocomplete="new-password"
+                        >
+                        <i class="fas fa-lock input-icon"></i>
+                        <button type="button" class="password-toggle" onclick="togglePassword('confirmPassword', 'toggleIcon2')">
+                            <i class="fas fa-eye" id="toggleIcon2"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-register">
+                    <i class="fas fa-user-plus"></i> Create Account
+                </button>
+            </form>
+            
+            <div class="register-footer">
+                <p>Already have an account? <a href="/auth/login">Sign in</a></p>
+                <a href="/" class="back-home">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function togglePassword(inputId, iconId) {
+            const passwordInput = document.getElementById(inputId);
+            const toggleIcon = document.getElementById(iconId);
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+        
+        function checkPasswordStrength(password) {
+            const bars = [
+                document.getElementById('bar1'),
+                document.getElementById('bar2'),
+                document.getElementById('bar3'),
+                document.getElementById('bar4')
+            ];
+            const strengthText = document.getElementById('strengthText');
+            
+            // Reset bars
+            bars.forEach(bar => bar.className = 'strength-bar');
+            
+            let strength = 0;
+            
+            if (password.length >= 4) strength++;
+            if (password.length >= 8) strength++;
+            if (/[A-Z]/.test(password) && /[a-z]/.test(password)) strength++;
+            if (/[0-9]/.test(password) || /[^A-Za-z0-9]/.test(password)) strength++;
+            
+            const strengthLevels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
+            const strengthColors = ['', 'weak', 'weak', 'medium', 'strong'];
+            
+            for (let i = 0; i < strength; i++) {
+                bars[i].classList.add(strengthColors[strength]);
+            }
+            
+            strengthText.textContent = strength > 0 ? `Password strength: ${strengthLevels[strength]}` : '';
+            strengthText.style.color = strength <= 2 ? '#ef4444' : strength === 3 ? '#eab308' : '#22c55e';
+        }
+        
+        // Form validation
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                e.preventDefault();
+                alert('Passwords do not match!');
+            }
+        });
+    </script>
+</body>
+</html>

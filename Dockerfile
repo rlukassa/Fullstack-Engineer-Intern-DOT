@@ -9,5 +9,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/src/views ./src/views
+COPY --from=builder /app/public ./public
 EXPOSE 3000
 CMD ["npm", "run", "start:prod"]

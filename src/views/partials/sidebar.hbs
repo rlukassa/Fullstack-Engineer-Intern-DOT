@@ -1,0 +1,189 @@
+<!-- Sidebar -->
+<aside class="sidebar slide-in-left">
+    <div class="sidebar-header">
+        <div class="sidebar-logo">
+            <i class="fas fa-train"></i>
+            <span>Admin Panel</span>
+        </div>
+    </div>
+    
+    <nav class="sidebar-nav">
+        <div class="nav-section">
+            <span class="nav-section-title">Main Menu</span>
+            <a href="/" class="sidebar-link {{#if activePage.home}}active{{/if}}">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+        </div>
+        
+        <div class="nav-section">
+            <span class="nav-section-title">Management</span>
+            <a href="/trains" class="sidebar-link {{#if activePage.trains}}active{{/if}}">
+                <i class="fas fa-train"></i>
+                <span>Trains</span>
+            </a>
+            <a href="/schedules" class="sidebar-link {{#if activePage.schedules}}active{{/if}}">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Schedules</span>
+            </a>
+            <a href="/stations" class="sidebar-link {{#if activePage.stations}}active{{/if}}">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>Stations</span>
+            </a>
+        </div>
+        
+        {{#if (eq userRole "ADMIN")}}
+        <div class="nav-section">
+            <span class="nav-section-title">Bookings</span>
+            <a href="/bookings" class="sidebar-link {{#if activePage.bookings}}active{{/if}}">
+                <i class="fas fa-ticket-alt"></i>
+                <span>All Bookings</span>
+            </a>
+        </div>
+        {{/if}}
+    </nav>
+    
+    <div class="sidebar-footer">
+        <div class="user-profile">
+            <div class="avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="user-details">
+                <span class="user-name">{{username}}</span>
+                <span class="user-role">{{userRole}}</span>
+            </div>
+        </div>
+    </div>
+</aside>
+
+<style>
+    .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 260px;
+        height: 100vh;
+        background: linear-gradient(180deg, #111111 0%, #1a1a1a 100%);
+        border-right: 1px solid #2a2a2a;
+        display: flex;
+        flex-direction: column;
+        z-index: 1000;
+        overflow-y: auto;
+    }
+    
+    .sidebar-header {
+        padding: 25px 20px;
+        border-bottom: 1px solid #2a2a2a;
+    }
+    
+    .sidebar-logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #fff;
+        font-size: 1.2rem;
+        font-weight: 700;
+    }
+    
+    .sidebar-logo i {
+        color: #fef08a;
+        font-size: 1.5rem;
+    }
+    
+    .sidebar-nav {
+        flex: 1;
+        padding: 20px 0;
+    }
+    
+    .nav-section {
+        margin-bottom: 25px;
+    }
+    
+    .nav-section-title {
+        display: block;
+        padding: 0 20px;
+        margin-bottom: 10px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #666;
+    }
+    
+    .sidebar-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 20px;
+        color: #888;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border-left: 3px solid transparent;
+    }
+    
+    .sidebar-link:hover {
+        background: rgba(254, 240, 138, 0.05);
+        color: #fef08a;
+        border-left-color: #fef08a;
+    }
+    
+    .sidebar-link.active {
+        background: rgba(254, 240, 138, 0.1);
+        color: #fef08a;
+        border-left-color: #fef08a;
+    }
+    
+    .sidebar-link i {
+        width: 20px;
+        text-align: center;
+    }
+    
+    .sidebar-footer {
+        padding: 20px;
+        border-top: 1px solid #2a2a2a;
+    }
+    
+    .user-profile {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #fef08a 0%, #fde047 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #000;
+    }
+    
+    .user-details {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .user-name {
+        color: #fff;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+    
+    .user-role {
+        color: #666;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+    }
+    
+    @media (max-width: 768px) {
+        .sidebar {
+            transform: translateX(-100%);
+        }
+        
+        .sidebar.open {
+            transform: translateX(0);
+        }
+    }
+</style>

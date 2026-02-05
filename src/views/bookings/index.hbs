@@ -1,0 +1,146 @@
+<div class="page-header">
+    <h1><i class="fas fa-ticket-alt"></i> My Bookings</h1>
+    <p>View and manage your train ticket bookings</p>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title"><i class="fas fa-list"></i> Booking History</h3>
+        <span class="badge badge-info">{{bookings.length}} bookings</span>
+    </div>
+    
+    {{#if bookings.length}}
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Train</th>
+                    <th>Route</th>
+                    <th>Departure</th>
+                    <th>Seats</th>
+                    <th>Total Price</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each bookings}}
+                <tr>
+                    <td>
+                        <span style="font-weight: bold; color: #3b82f6;">#{{this.id}}</span>
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="width: 40px; height: 40px; background: rgba(59, 130, 246, 0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-train" style="color: #3b82f6;"></i>
+                            </div>
+                            <div>
+                                <strong>{{this.schedule.train.name}}</strong>
+                                <div style="font-size: 0.8rem; color: #888;">{{this.schedule.train.type}}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="badge badge-info">{{this.schedule.originStation.code}}</span>
+                            <i class="fas fa-arrow-right" style="color: #666;"></i>
+                            <span class="badge badge-success">{{this.schedule.destinationStation.code}}</span>
+                        </div>
+                    </td>
+                    <td>{{formatDate this.schedule.departureTime}}</td>
+                    <td>
+                        <span class="badge badge-primary">{{this.seatCount}} seat(s)</span>
+                    </td>
+                    <td>
+                        <strong style="color: #22c55e;">{{formatPrice this.totalPrice}}</strong>
+                    </td>
+                    <td>
+                        {{#if (eq this.status "CONFIRMED")}}
+                        <span class="badge badge-success">Confirmed</span>
+                        {{else if (eq this.status "PENDING")}}
+                        <span class="badge badge-warning">Pending</span>
+                        {{else if (eq this.status "CANCELLED")}}
+                        <span class="badge badge-danger">Cancelled</span>
+                        {{else}}
+                        <span class="badge badge-info">{{this.status}}</span>
+                        {{/if}}
+                    </td>
+                    <td>
+                        <div class="action-btns">
+                            <a href="/bookings/{{this.id}}" class="btn-icon edit" title="View Details">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            {{#if (eq this.status "PENDING")}}
+                            <button class="btn-icon delete" onclick="cancelBooking({{this.id}})" title="Cancel Booking">
+                                <i class="fas fa-times"></i>
+                            </button>
+                            {{/if}}
+                        </div>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+    {{else}}
+    <div class="empty-state">
+        <i class="fas fa-ticket-alt"></i>
+        <h3>No Bookings Yet</h3>
+        <p>You haven't made any bookings yet.</p>
+        <a href="/schedules" class="btn btn-primary" style="margin-top: 20px;">
+            <i class="fas fa-calendar-alt"></i> Browse Schedules
+        </a>
+    </div>
+    {{/if}}
+</div>
+
+<!-- Cancel Booking Modal -->
+<div class="modal-overlay" id="cancelModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title"><i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i> Cancel Booking</h3>
+            <button class="modal-close" onclick="closeModal('cancelModal')">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to cancel this booking?</p>
+            <p style="color: #888; font-size: 0.9rem; margin-top: 10px;">This action cannot be undone.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('cancelModal')">Keep Booking</button>
+            <button class="btn btn-danger" id="confirmCancelBtn">Cancel Booking</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let bookingToCancel = null;
+    
+    function cancelBooking(id) {
+        bookingToCancel = id;
+        openModal('cancelModal');
+    }
+    
+    document.getElementById('confirmCancelBtn').addEventListener('click', async function() {
+        if (bookingToCancel) {
+            try {
+                const response = await fetch(`/bookings/${bookingToCancel}`, {
+                    method: 'DELETE',
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    window.location.href = '/bookings?message=Booking cancelled successfully&messageType=success';
+                } else {
+                    closeModal('cancelModal');
+                    showPopup('danger', result.message || 'Failed to cancel booking');
+                }
+            } catch (error) {
+                closeModal('cancelModal');
+                showPopup('danger', 'Failed to cancel booking');
+            }
+        }
+    });
+</script>

@@ -1,0 +1,161 @@
+<!-- Popup/Toast Notification System -->
+<div id="popup-container"></div>
+
+<style>
+    #popup-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 10000;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-width: 400px;
+    }
+    
+    .popup {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+        padding: 18px 20px;
+        border-radius: 12px;
+        background: #1a1a1a;
+        border: 1px solid #333;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        animation: slideInRight 0.4s ease-out, fadeOut 0.4s ease-out 4.6s forwards;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .popup::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+    }
+    
+    .popup.success::before { background: #22c55e; }
+    .popup.danger::before { background: #ef4444; }
+    .popup.warning::before { background: #eab308; }
+    .popup.info::before { background: #3b82f6; }
+    
+    .popup-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+    }
+    
+    .popup.success .popup-icon { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+    .popup.danger .popup-icon { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+    .popup.warning .popup-icon { background: rgba(234, 179, 8, 0.2); color: #eab308; }
+    .popup.info .popup-icon { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+    
+    .popup-content {
+        flex: 1;
+    }
+    
+    .popup-title {
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #fff;
+        margin-bottom: 4px;
+    }
+    
+    .popup-message {
+        font-size: 0.85rem;
+        color: #888;
+        line-height: 1.4;
+    }
+    
+    .popup-close {
+        background: none;
+        border: none;
+        color: #666;
+        cursor: pointer;
+        padding: 5px;
+        font-size: 1rem;
+        transition: color 0.3s ease;
+    }
+    
+    .popup-close:hover {
+        color: #fff;
+    }
+    
+    .popup-progress {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 3px;
+        animation: progress 5s linear forwards;
+    }
+    
+    .popup.success .popup-progress { background: #22c55e; }
+    .popup.danger .popup-progress { background: #ef4444; }
+    .popup.warning .popup-progress { background: #eab308; }
+    .popup.info .popup-progress { background: #3b82f6; }
+    
+    @keyframes slideInRight {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes fadeOut {
+        to { opacity: 0; transform: translateX(50px); }
+    }
+    
+    @keyframes progress {
+        from { width: 100%; }
+        to { width: 0%; }
+    }
+</style>
+
+<script>
+    function showPopup(type, message) {
+        const container = document.getElementById('popup-container');
+        
+        const icons = {
+            success: 'fa-check',
+            danger: 'fa-times',
+            warning: 'fa-exclamation',
+            info: 'fa-info'
+        };
+        
+        const titles = {
+            success: 'Success!',
+            danger: 'Error!',
+            warning: 'Warning!',
+            info: 'Info'
+        };
+        
+        const popup = document.createElement('div');
+        popup.className = `popup ${type}`;
+        popup.innerHTML = `
+            <div class="popup-icon">
+                <i class="fas ${icons[type] || icons.info}"></i>
+            </div>
+            <div class="popup-content">
+                <div class="popup-title">${titles[type] || titles.info}</div>
+                <div class="popup-message">${message}</div>
+            </div>
+            <button class="popup-close" onclick="this.parentElement.remove()">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="popup-progress"></div>
+        `;
+        
+        container.appendChild(popup);
+        
+        setTimeout(() => {
+            if (popup.parentElement) {
+                popup.remove();
+            }
+        }, 5000);
+    }
+</script>

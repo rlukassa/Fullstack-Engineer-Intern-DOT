@@ -1,0 +1,136 @@
+<div class="page-header">
+    <h1><i class="fas fa-map-marker-alt"></i> Stations Management</h1>
+    <p>Manage train stations in the system</p>
+</div>
+
+{{#if (eq userRole "ADMIN")}}
+<div class="card" style="margin-bottom: 30px;">
+    <div class="card-header">
+        <h3 class="card-title"><i class="fas fa-plus-circle"></i> Add New Station</h3>
+    </div>
+    <form action="/stations" method="POST">
+        <div style="display: grid; grid-template-columns: 1fr 150px auto; gap: 15px; align-items: end;">
+            <div class="form-group" style="margin: 0;">
+                <label class="form-label">Station Name</label>
+                <input type="text" name="name" class="search-input" placeholder="e.g., Gambir" required maxlength="50">
+            </div>
+            <div class="form-group" style="margin: 0;">
+                <label class="form-label">Code (3 letters)</label>
+                <input type="text" name="code" class="search-input" placeholder="e.g., GMR" required maxlength="3" minlength="3" style="text-transform: uppercase;">
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add Station
+            </button>
+        </div>
+    </form>
+</div>
+{{/if}}
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title"><i class="fas fa-list"></i> All Stations</h3>
+        <span class="badge badge-info">{{stations.length}} stations</span>
+    </div>
+    
+    {{#if stations.length}}
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Station Name</th>
+                    <th>Code</th>
+                    {{#if (eq userRole "ADMIN")}}
+                    <th>Actions</th>
+                    {{/if}}
+                </tr>
+            </thead>
+            <tbody>
+                {{#each stations}}
+                <tr>
+                    <td>{{this.id}}</td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="width: 40px; height: 40px; background: rgba(34, 197, 94, 0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-map-marker-alt" style="color: #22c55e;"></i>
+                            </div>
+                            <strong>{{this.name}}</strong>
+                        </div>
+                    </td>
+                    <td><span class="badge badge-info">{{this.code}}</span></td>
+                    {{#if (eq ../userRole "ADMIN")}}
+                    <td>
+                        <div class="action-btns">
+                            <a href="/stations/{{this.id}}" class="btn-icon edit" title="View Details">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <button class="btn-icon delete" onclick="deleteStation({{this.id}}, '{{this.name}}')" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                    {{/if}}
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+    {{else}}
+    <div class="empty-state">
+        <i class="fas fa-map-marker-alt"></i>
+        <h3>Masih Kosong</h3>
+        <p>Menunggu Admin menambahkan data stasiun</p>
+    </div>
+    {{/if}}
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title"><i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i> Confirm Delete</h3>
+            <button class="modal-close" onclick="closeModal('deleteModal')">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to delete station "<span id="deleteStationName"></span>"?</p>
+            <p style="color: #888; font-size: 0.9rem; margin-top: 10px;">This action cannot be undone.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('deleteModal')">Cancel</button>
+            <button class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let stationToDelete = null;
+    
+    function deleteStation(id, name) {
+        stationToDelete = id;
+        document.getElementById('deleteStationName').textContent = name;
+        openModal('deleteModal');
+    }
+    
+    document.getElementById('confirmDeleteBtn').addEventListener('click', async function() {
+        if (stationToDelete) {
+            try {
+                const response = await fetch(`/stations/${stationToDelete}`, {
+                    method: 'DELETE',
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    window.location.href = '/stations?message=Station deleted successfully&messageType=success';
+                } else {
+                    closeModal('deleteModal');
+                    showPopup('danger', result.message || 'Failed to delete station');
+                }
+            } catch (error) {
+                closeModal('deleteModal');
+                showPopup('danger', 'Failed to delete station');
+            }
+        }
+    });
+</script>

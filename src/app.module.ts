@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
@@ -13,6 +13,7 @@ import { Schedule } from './schedules/entities/schedule.entity';
 import { User } from './auth/entities/user.entity';
 import { Booking } from './bookings/entities/booking.entity';
 import { Station } from './stations/entities/station.entity';
+import { SessionMiddleware } from './common/middleware/session.middleware';
 
 @Module({
   imports: [
@@ -40,4 +41,8 @@ import { Station } from './stations/entities/station.entity';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(SessionMiddleware).forRoutes('*');
+  }
+}

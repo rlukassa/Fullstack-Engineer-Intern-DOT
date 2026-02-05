@@ -5,6 +5,7 @@ import {
   OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
+  DeleteDateColumn,
 } from 'typeorm';
 import { Schedule } from '../../schedules/entities/schedule.entity';
 
@@ -30,4 +31,7 @@ export class Train {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt: Date;
 }

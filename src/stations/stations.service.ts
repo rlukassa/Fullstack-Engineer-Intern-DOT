@@ -36,6 +36,6 @@ export class StationsService {
   }
 
   async remove(id: number) {
-    return this.stationsRepository.delete(id);
+    return this.stationsRepository.softDelete(id);
   }
 }

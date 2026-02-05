@@ -1,25 +1,25 @@
 <div class="page-header">
-    <h1><i class="fas fa-map-marker-alt"></i> Stations Management</h1>
-    <p>Manage train stations in the system</p>
+    <h1><i class="fas fa-map-marker-alt"></i> Stasiun</h1>
+    <p>Kelola stasiun kereta dalam sistem</p>
 </div>
 
 {{#if (eq userRole "ADMIN")}}
 <div class="card" style="margin-bottom: 30px;">
     <div class="card-header">
-        <h3 class="card-title"><i class="fas fa-plus-circle"></i> Add New Station</h3>
+        <h3 class="card-title"><i class="fas fa-plus-circle"></i> Tambah Stasiun Baru</h3>
     </div>
     <form action="/stations" method="POST">
         <div style="display: grid; grid-template-columns: 1fr 150px auto; gap: 15px; align-items: end;">
             <div class="form-group" style="margin: 0;">
-                <label class="form-label">Station Name</label>
+                <label class="form-label">Nama Stasiun</label>
                 <input type="text" name="name" class="search-input" placeholder="e.g., Gambir" required maxlength="50">
             </div>
             <div class="form-group" style="margin: 0;">
-                <label class="form-label">Code (3 letters)</label>
+                <label class="form-label">Kode (3 huruf)</label>
                 <input type="text" name="code" class="search-input" placeholder="e.g., GMR" required maxlength="3" minlength="3" style="text-transform: uppercase;">
             </div>
             <button type="submit" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Add Station
+                <i class="fas fa-plus"></i> Tambah Stasiun
             </button>
         </div>
     </form>
@@ -28,8 +28,8 @@
 
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title"><i class="fas fa-list"></i> All Stations</h3>
-        <span class="badge badge-info">{{stations.length}} stations</span>
+        <h3 class="card-title"><i class="fas fa-list"></i> Semua Stasiun</h3>
+        <span class="badge badge-info">{{stations.length}} stasiun</span>
     </div>
     
     {{#if stations.length}}
@@ -38,10 +38,10 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Station Name</th>
-                    <th>Code</th>
+                    <th>Nama Stasiun</th>
+                    <th>Kode</th>
                     {{#if (eq userRole "ADMIN")}}
-                    <th>Actions</th>
+                    <th>Aksi</th>
                     {{/if}}
                 </tr>
             </thead>
@@ -61,10 +61,10 @@
                     {{#if (eq ../userRole "ADMIN")}}
                     <td>
                         <div class="action-btns">
-                            <a href="/stations/{{this.id}}" class="btn-icon edit" title="View Details">
+                            <a href="/stations/{{this.id}}" class="btn-icon edit" title="Lihat Detail">
                                 <i class="fas fa-eye"></i>
                             </a>
-                            <button class="btn-icon delete" onclick="deleteStation({{this.id}}, '{{this.name}}')" title="Delete">
+                            <button class="btn-icon delete" onclick="deleteStation({{this.id}}, '{{this.name}}')" title="Hapus">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
@@ -94,12 +94,12 @@
             </button>
         </div>
         <div class="modal-body">
-            <p>Are you sure you want to delete station "<span id="deleteStationName"></span>"?</p>
-            <p style="color: #888; font-size: 0.9rem; margin-top: 10px;">This action cannot be undone.</p>
+            <p>Apakah Anda yakin ingin menghapus stasiun "<span id="deleteStationName"></span>"?</p>
+            <p style="color: #888; font-size: 0.9rem; margin-top: 10px;">Tindakan ini tidak dapat dibatalkan.</p>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-secondary" onclick="closeModal('deleteModal')">Cancel</button>
-            <button class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+            <button class="btn btn-secondary" onclick="closeModal('deleteModal')">Batal</button>
+            <button class="btn btn-danger" id="confirmDeleteBtn">Hapus</button>
         </div>
     </div>
 </div>
@@ -122,14 +122,14 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    window.location.href = '/stations?message=Station deleted successfully&messageType=success';
+                    window.location.href = '/stations?message=Stasiun berhasil dihapus&messageType=success';
                 } else {
                     closeModal('deleteModal');
-                    showPopup('danger', result.message || 'Failed to delete station');
+                    showPopup('danger', result.message || 'Gagal menghapus stasiun');
                 }
             } catch (error) {
                 closeModal('deleteModal');
-                showPopup('danger', 'Failed to delete station');
+                showPopup('danger', 'Gagal menghapus stasiun');
             }
         }
     });

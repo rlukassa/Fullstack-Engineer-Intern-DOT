@@ -1,8 +1,8 @@
 <div class="page-header">
     <a href="/trains" class="btn btn-secondary btn-sm" style="margin-bottom: 15px;">
-        <i class="fas fa-arrow-left"></i> Back to Trains
+        <i class="fas fa-arrow-left"></i> Kembali ke Kereta
     </a>
-    <h1><i class="fas fa-train"></i> Train Details</h1>
+    <h1><i class="fas fa-train"></i> Detail Kereta</h1>
 </div>
 
 {{#if train}}
@@ -19,37 +19,74 @@
     </div>
     <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
         <div>
-            <label style="color: #888; font-size: 0.85rem; display: block; margin-bottom: 5px;">Train ID</label>
+            <label style="color: #888; font-size: 0.85rem; display: block; margin-bottom: 5px;">ID Kereta</label>
             <p style="color: #fff; font-size: 1.1rem; font-weight: 600;">{{train.id}}</p>
         </div>
         <div>
-            <label style="color: #888; font-size: 0.85rem; display: block; margin-bottom: 5px;">Train Name</label>
+            <label style="color: #888; font-size: 0.85rem; display: block; margin-bottom: 5px;">Nama Kereta</label>
             <p style="color: #fff; font-size: 1.1rem; font-weight: 600;">{{train.name}}</p>
         </div>
         <div>
-            <label style="color: #888; font-size: 0.85rem; display: block; margin-bottom: 5px;">Type</label>
+            <label style="color: #888; font-size: 0.85rem; display: block; margin-bottom: 5px;">Tipe</label>
             <p style="color: #fff; font-size: 1.1rem; font-weight: 600;">{{train.type}}</p>
         </div>
         <div>
-            <label style="color: #888; font-size: 0.85rem; display: block; margin-bottom: 5px;">Total Seats</label>
-            <p style="color: #fff; font-size: 1.1rem; font-weight: 600;">{{train.totalSeats}} seats</p>
+            <label style="color: #888; font-size: 0.85rem; display: block; margin-bottom: 5px;">Total Kursi</label>
+            <p style="color: #fff; font-size: 1.1rem; font-weight: 600;">{{train.totalSeats}} kursi</p>
         </div>
         <div>
-            <label style="color: #888; font-size: 0.85rem; display: block; margin-bottom: 5px;">Created At</label>
+            <label style="color: #888; font-size: 0.85rem; display: block; margin-bottom: 5px;">Dibuat Pada</label>
             <p style="color: #fff; font-size: 1.1rem; font-weight: 600;">{{formatDate train.createdAt}}</p>
         </div>
         <div>
-            <label style="color: #888; font-size: 0.85rem; display: block; margin-bottom: 5px;">Last Updated</label>
+            <label style="color: #888; font-size: 0.85rem; display: block; margin-bottom: 5px;">Terakhir Diperbarui</label>
             <p style="color: #fff; font-size: 1.1rem; font-weight: 600;">{{formatDate train.updatedAt}}</p>
         </div>
     </div>
 </div>
+
+{{#if (eq userRole "ADMIN")}}
+<div class="card" style="margin-top: 20px;">
+    <div class="card-header">
+        <h3 class="card-title"><i class="fas fa-edit" style="color: #fbbf24;"></i> Edit Kereta</h3>
+    </div>
+    <div style="padding: 20px;">
+        <p style="color: #888; font-size: 0.9rem; margin-bottom: 20px; background: rgba(251, 191, 36, 0.1); padding: 15px; border-radius: 8px; border-left: 4px solid #fbbf24;">
+            <i class="fas fa-info-circle"></i> Perhatian: Mengubah data kereta akan otomatis me-refund semua pemesanan yang sudah terkonfirmasi untuk jadwal terkait kereta ini.
+        </p>
+        <form action="/trains/{{train.id}}/update" method="POST">
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                <div class="form-group" style="margin: 0;">
+                    <label class="form-label">Nama Kereta</label>
+                    <input type="text" name="name" class="search-input" value="{{train.name}}" maxlength="20" required>
+                </div>
+                <div class="form-group" style="margin: 0;">
+                    <label class="form-label">Tipe</label>
+                    <select name="type" class="search-input" required>
+                        <option value="EKSEKUTIF" {{#if (eq train.type "EKSEKUTIF")}}selected{{/if}}>Eksekutif</option>
+                        <option value="BISNIS" {{#if (eq train.type "BISNIS")}}selected{{/if}}>Bisnis</option>
+                        <option value="EKONOMI" {{#if (eq train.type "EKONOMI")}}selected{{/if}}>Ekonomi</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin: 0;">
+                    <label class="form-label">Total Kursi</label>
+                    <input type="number" name="totalSeats" class="search-input" value="{{train.totalSeats}}" min="1" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-warning" style="margin-top: 15px;">
+                <i class="fas fa-save"></i> Simpan Perubahan
+            </button>
+        </form>
+    </div>
+</div>
+{{/if}}
+
 {{else}}
 <div class="card">
     <div class="empty-state">
         <i class="fas fa-exclamation-circle"></i>
-        <h3>Train Not Found</h3>
-        <p>The train you're looking for doesn't exist.</p>
+        <h3>Kereta Tidak Ditemukan</h3>
+        <p>Kereta yang Anda cari tidak ada.</p>
     </div>
 </div>
 {{/if}}

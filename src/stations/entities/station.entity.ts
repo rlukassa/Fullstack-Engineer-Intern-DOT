@@ -3,6 +3,9 @@ import {
   PrimaryGeneratedColumn,
   Column,
   OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+  DeleteDateColumn,
 } from 'typeorm';
 import { Schedule } from '../../schedules/entities/schedule.entity';
 
@@ -22,4 +25,13 @@ export class Station {
 
   @OneToMany(() => Schedule, (schedule) => schedule.destinationStation)
   arrivalSchedules: Schedule[];
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt: Date;
 }

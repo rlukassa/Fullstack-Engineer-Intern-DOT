@@ -4,7 +4,9 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
+import { Booking } from '../../bookings/entities/booking.entity';
 
 @Entity('users')
 export class User {
@@ -22,6 +24,12 @@ export class User {
 
   @Column({ type: 'varchar', default: 'CUSTOMER' })
   role: string; // ADMIN / CUSTOMER
+
+  @Column({ type: 'bigint', default: 0 })
+  balance: number; // Saldo dalam Rupiah
+
+  @OneToMany(() => Booking, (booking) => booking.user)
+  bookings: Booking[];
 
   @CreateDateColumn()
   createdAt: Date;

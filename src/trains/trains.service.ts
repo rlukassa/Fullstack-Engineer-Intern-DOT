@@ -37,6 +37,6 @@ export class TrainsService {
   }
 
   async remove(id: string) {
-    return this.trainsRepository.delete(id);
+    return this.trainsRepository.softDelete(id);
   }
 }

@@ -1,8 +1,8 @@
 <div class="page-header">
     <a href="/stations" class="btn btn-secondary btn-sm" style="margin-bottom: 15px;">
-        <i class="fas fa-arrow-left"></i> Back to Stations
+        <i class="fas fa-arrow-left"></i> Kembali ke Stasiun
     </a>
-    <h1><i class="fas fa-map-marker-alt"></i> Station Details</h1>
+    <h1><i class="fas fa-map-marker-alt"></i> Detail Stasiun</h1>
 </div>
 
 {{#if station}}
@@ -13,15 +13,15 @@
     </div>
     <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
         <div>
-            <label style="color: #888; font-size: 0.85rem; display: block; margin-bottom: 5px;">Station ID</label>
+            <label style="color: #888; font-size: 0.85rem; display: block; margin-bottom: 5px;">ID Stasiun</label>
             <p style="color: #fff; font-size: 1.1rem; font-weight: 600;">{{station.id}}</p>
         </div>
         <div>
-            <label style="color: #888; font-size: 0.85rem; display: block; margin-bottom: 5px;">Station Name</label>
+            <label style="color: #888; font-size: 0.85rem; display: block; margin-bottom: 5px;">Nama Stasiun</label>
             <p style="color: #fff; font-size: 1.1rem; font-weight: 600;">{{station.name}}</p>
         </div>
         <div>
-            <label style="color: #888; font-size: 0.85rem; display: block; margin-bottom: 5px;">Station Code</label>
+            <label style="color: #888; font-size: 0.85rem; display: block; margin-bottom: 5px;">Kode Stasiun</label>
             <p style="color: #fff; font-size: 1.1rem; font-weight: 600;">{{station.code}}</p>
         </div>
     </div>
@@ -30,8 +30,8 @@
 <div class="card">
     <div class="empty-state">
         <i class="fas fa-exclamation-circle"></i>
-        <h3>Station Not Found</h3>
-        <p>The station you're looking for doesn't exist.</p>
+        <h3>Stasiun tidak ditemukan</h3>
+        <p>Stasiun yang Anda cari tidak ada.</p>
     </div>
 </div>
 {{/if}}

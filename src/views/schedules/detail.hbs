@@ -1,16 +1,25 @@
 <div class="page-header">
     <a href="/schedules" class="btn btn-secondary" style="margin-bottom: 20px;">
-        <i class="fas fa-arrow-left"></i> Back to Schedules
+        <i class="fas fa-arrow-left"></i> Kembali ke Jadwal
     </a>
-    <h1><i class="fas fa-calendar-alt"></i> Schedule Detail</h1>
+    <h1><i class="fas fa-calendar-alt"></i> Detail Jadwal</h1>
 </div>
 
-<div class="card" style="max-width: 800px;">
+{{#if schedule}}
+<div class="card" style="max-width: 900px;">
     <div class="card-header">
         <h3 class="card-title">
-            <i class="fas fa-info-circle"></i> Schedule #{{schedule.id}}
+            <i class="fas fa-info-circle"></i> Jadwal #{{schedule.id}}
         </h3>
-        <span class="badge badge-success">Active</span>
+        {{#if (eq schedule.journeyStatus "BELUM_BERANGKAT")}}
+        <span class="badge badge-warning"><i class="fas fa-clock"></i> Belum Berangkat</span>
+        {{else if (eq schedule.journeyStatus "DALAM_PERJALANAN")}}
+        <span class="badge badge-info"><i class="fas fa-train"></i> Dalam Perjalanan</span>
+        {{else if (eq schedule.journeyStatus "TIBA_LOKASI")}}
+        <span class="badge badge-success"><i class="fas fa-check-circle"></i> Tiba Lokasi</span>
+        {{else}}
+        <span class="badge badge-secondary">{{schedule.journeyStatus}}</span>
+        {{/if}}
     </div>
     
     <div style="padding: 30px;">
@@ -22,46 +31,149 @@
             <div>
                 <h2 style="margin: 0; color: white;">{{schedule.train.name}}</h2>
                 <span class="badge badge-primary" style="margin-top: 8px;">{{schedule.train.type}}</span>
-                <span class="badge badge-info">{{schedule.train.totalSeats}} seats</span>
+                <span class="badge badge-info">{{schedule.train.totalSeats}} kursi</span>
             </div>
         </div>
+
+        <!-- Seat Availability Info -->
+        {{#if seatInfo}}
+        <div style="margin-bottom: 30px; padding: 20px; background: rgba(59, 130, 246, 0.1); border-radius: 12px; border: 1px solid rgba(59, 130, 246, 0.3);">
+            <h4 style="color: #3b82f6; margin-bottom: 15px;"><i class="fas fa-chair"></i> Ketersediaan Kursi</h4>
+            <div style="display: flex; gap: 30px; flex-wrap: wrap;">
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; font-weight: bold; {{#if (gt seatInfo.available 0)}}color: #22c55e;{{else}}color: #ef4444;{{/if}}">{{seatInfo.available}}</div>
+                    <div style="color: #888; font-size: 0.9rem;">Tersedia</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; font-weight: bold; color: #fbbf24;">{{seatInfo.booked}}</div>
+                    <div style="color: #888; font-size: 0.9rem;">Terpesan</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; font-weight: bold; color: #888;">{{seatInfo.total}}</div>
+                    <div style="color: #888; font-size: 0.9rem;">Total</div>
+                </div>
+            </div>
+            {{#if (eq seatInfo.available 0)}}
+            <div style="margin-top: 15px; padding: 10px; background: rgba(239, 68, 68, 0.1); border-radius: 8px; text-align: center;">
+                <i class="fas fa-exclamation-circle" style="color: #ef4444;"></i>
+                <span style="color: #ef4444; margin-left: 8px;">Kursi sudah habis untuk jadwal ini</span>
+            </div>
+            {{/if}}
+        </div>
+        {{/if}}
+
+        <!-- Admin: Update Journey Status -->
+        {{#if (eq userRole "ADMIN")}}
+        <div style="margin-bottom: 30px; padding: 20px; background: rgba(168, 85, 247, 0.1); border-radius: 12px; border: 1px solid rgba(168, 85, 247, 0.3);">
+            <h4 style="color: #a855f7; margin-bottom: 15px;"><i class="fas fa-cog"></i> Kelola Status Perjalanan</h4>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <form action="/schedules/{{schedule.id}}/status" method="POST" style="display: inline;">
+                    <input type="hidden" name="status" value="BELUM_BERANGKAT">
+                    <button type="submit" class="btn btn-warning btn-sm {{#if (eq schedule.journeyStatus 'BELUM_BERANGKAT')}}disabled{{/if}}" {{#if (eq schedule.journeyStatus 'BELUM_BERANGKAT')}}disabled{{/if}}>
+                        <i class="fas fa-clock"></i> Belum Berangkat
+                    </button>
+                </form>
+                <form action="/schedules/{{schedule.id}}/status" method="POST" style="display: inline;">
+                    <input type="hidden" name="status" value="DALAM_PERJALANAN">
+                    <button type="submit" class="btn btn-sm" style="background: #3b82f6; color: white; {{#if (eq schedule.journeyStatus 'DALAM_PERJALANAN')}}opacity: 0.5; cursor: not-allowed;{{/if}}" {{#if (eq schedule.journeyStatus 'DALAM_PERJALANAN')}}disabled{{/if}}>
+                        <i class="fas fa-train"></i> Dalam Perjalanan
+                    </button>
+                </form>
+                <form action="/schedules/{{schedule.id}}/status" method="POST" style="display: inline;">
+                    <input type="hidden" name="status" value="TIBA_LOKASI">
+                    <button type="submit" class="btn btn-success btn-sm {{#if (eq schedule.journeyStatus 'TIBA_LOKASI')}}disabled{{/if}}" {{#if (eq schedule.journeyStatus 'TIBA_LOKASI')}}disabled{{/if}}>
+                        <i class="fas fa-check-circle"></i> Tiba Lokasi
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Admin: Edit Schedule -->
+        <div style="margin-bottom: 30px; padding: 20px; background: rgba(251, 191, 36, 0.1); border-radius: 12px; border: 1px solid rgba(251, 191, 36, 0.3);">
+            <h4 style="color: #fbbf24; margin-bottom: 15px;"><i class="fas fa-edit"></i> Edit Jadwal</h4>
+            <p style="color: #888; font-size: 0.9rem; margin-bottom: 15px;">
+                <i class="fas fa-info-circle"></i> Perhatian: Mengubah jadwal akan otomatis me-refund semua pemesanan yang sudah terkonfirmasi.
+            </p>
+            <form action="/schedules/{{schedule.id}}/update" method="POST">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group" style="margin: 0;">
+                        <label class="form-label">Kereta</label>
+                        <select name="trainId" class="search-input">
+                            {{#each trains}}
+                            <option value="{{this.id}}" {{#if (eq this.id ../schedule.trainId)}}selected{{/if}}>{{this.name}} ({{this.type}})</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label class="form-label">Harga (Rp)</label>
+                        <input type="number" name="price" class="search-input" value="{{schedule.price}}" min="0">
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label class="form-label">Stasiun Asal</label>
+                        <select name="originStationId" class="search-input">
+                            {{#each stations}}
+                            <option value="{{this.id}}" {{#if (eq this.id ../schedule.originStationId)}}selected{{/if}}>{{this.code}} - {{this.name}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label class="form-label">Stasiun Tujuan</label>
+                        <select name="destinationStationId" class="search-input">
+                            {{#each stations}}
+                            <option value="{{this.id}}" {{#if (eq this.id ../schedule.destinationStationId)}}selected{{/if}}>{{this.code}} - {{this.name}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label class="form-label">Waktu Berangkat</label>
+                        <input type="datetime-local" name="departureTime" class="search-input">
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label class="form-label">Waktu Tiba</label>
+                        <input type="datetime-local" name="arrivalTime" class="search-input">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-warning" style="margin-top: 15px;">
+                    <i class="fas fa-save"></i> Simpan Perubahan
+                </button>
+            </form>
+        </div>
+        {{/if}}
         
         <!-- Route Info -->
         <div style="margin-bottom: 30px;">
-            <h4 style="color: #888; margin-bottom: 15px;"><i class="fas fa-route"></i> Route Information</h4>
+            <h4 style="color: #888; margin-bottom: 15px;"><i class="fas fa-route"></i> Informasi Rute</h4>
             <div style="display: flex; align-items: center; gap: 20px;">
                 <div style="text-align: center; flex: 1;">
-                    <div style="font-size: 0.9rem; color: #888;">From</div>
+                    <div style="font-size: 0.9rem; color: #888;">Dari</div>
                     <div style="font-size: 1.8rem; font-weight: bold; color: #3b82f6;">{{schedule.originStation.code}}</div>
                     <div style="color: white;">{{schedule.originStation.name}}</div>
-                    <div style="font-size: 0.85rem; color: #888;">{{schedule.originStation.city}}</div>
                 </div>
                 
                 <div style="flex: 0 0 100px; display: flex; flex-direction: column; align-items: center;">
                     <div style="width: 100%; height: 2px; background: linear-gradient(90deg, #3b82f6, #22c55e);"></div>
-                    <i class="fas fa-plane" style="color: #666; transform: rotate(90deg); margin: 10px 0;"></i>
-                    <div style="color: #888; font-size: 0.8rem;">Direct</div>
+                    <i class="fas fa-train" style="color: #666; margin: 10px 0;"></i>
+                    <div style="color: #888; font-size: 0.8rem;">Langsung</div>
                 </div>
                 
                 <div style="text-align: center; flex: 1;">
-                    <div style="font-size: 0.9rem; color: #888;">To</div>
+                    <div style="font-size: 0.9rem; color: #888;">Ke</div>
                     <div style="font-size: 1.8rem; font-weight: bold; color: #22c55e;">{{schedule.destinationStation.code}}</div>
                     <div style="color: white;">{{schedule.destinationStation.name}}</div>
-                    <div style="font-size: 0.85rem; color: #888;">{{schedule.destinationStation.city}}</div>
                 </div>
             </div>
         </div>
         
         <!-- Time Info -->
         <div style="margin-bottom: 30px;">
-            <h4 style="color: #888; margin-bottom: 15px;"><i class="fas fa-clock"></i> Time Information</h4>
+            <h4 style="color: #888; margin-bottom: 15px;"><i class="fas fa-clock"></i> Informasi Waktu</h4>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                 <div style="padding: 20px; background: rgba(255,255,255,0.05); border-radius: 12px; border-left: 4px solid #3b82f6;">
-                    <div style="font-size: 0.9rem; color: #888;">Departure</div>
+                    <div style="font-size: 0.9rem; color: #888;">Keberangkatan</div>
                     <div style="font-size: 1.2rem; font-weight: bold; color: white;">{{formatDate schedule.departureTime}}</div>
                 </div>
                 <div style="padding: 20px; background: rgba(255,255,255,0.05); border-radius: 12px; border-left: 4px solid #22c55e;">
-                    <div style="font-size: 0.9rem; color: #888;">Arrival</div>
+                    <div style="font-size: 0.9rem; color: #888;">Kedatangan</div>
                     <div style="font-size: 1.2rem; font-weight: bold; color: white;">{{formatDate schedule.arrivalTime}}</div>
                 </div>
             </div>
@@ -69,25 +181,119 @@
         
         <!-- Price -->
         <div style="margin-bottom: 30px;">
-            <h4 style="color: #888; margin-bottom: 15px;"><i class="fas fa-tag"></i> Pricing</h4>
+            <h4 style="color: #888; margin-bottom: 15px;"><i class="fas fa-tag"></i> Harga</h4>
             <div style="padding: 20px; background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.1)); border-radius: 12px; text-align: center;">
-                <div style="font-size: 0.9rem; color: #888;">Ticket Price</div>
+                <div style="font-size: 0.9rem; color: #888;">Harga Tiket</div>
                 <div style="font-size: 2rem; font-weight: bold; color: #22c55e;">{{formatPrice schedule.price}}</div>
-                <div style="font-size: 0.8rem; color: #888; margin-top: 5px;">per person</div>
+                <div style="font-size: 0.8rem; color: #888; margin-top: 5px;">per orang</div>
             </div>
         </div>
         
         {{#if isLoggedIn}}
-        <div style="display: flex; gap: 15px; justify-content: center;">
-            <a href="/bookings/create?scheduleId={{schedule.id}}" class="btn btn-primary" style="padding: 15px 30px;">
-                <i class="fas fa-ticket-alt"></i> Book This Schedule
-            </a>
-        </div>
+            {{#if (not (eq userRole "ADMIN"))}}
+                {{#if (eq schedule.journeyStatus "BELUM_BERANGKAT")}}
+                    {{#if (gt seatInfo.available 0)}}
+                    <div style="display: flex; gap: 15px; justify-content: center;">
+                        <button onclick="openBookingModal()" class="btn btn-success" style="padding: 15px 30px;">
+                            <i class="fas fa-ticket-alt"></i> Pesan Sekarang
+                        </button>
+                    </div>
+                    <p style="text-align: center; color: #888; margin-top: 15px;">Saldo Anda: <strong style="color: #22c55e;">{{formatBalance balance}}</strong></p>
+                    {{else}}
+                    <div style="text-align: center; padding: 20px; background: rgba(239, 68, 68, 0.1); border-radius: 12px; border: 1px solid rgba(239, 68, 68, 0.3);">
+                        <i class="fas fa-ban" style="color: #ef4444; font-size: 2rem; margin-bottom: 10px;"></i>
+                        <p style="color: #ef4444; margin: 0; font-weight: bold;">Kursi Sudah Habis</p>
+                        <p style="color: #888; margin: 5px 0 0 0; font-size: 0.9rem;">Maaf, semua kursi untuk jadwal ini sudah terpesan.</p>
+                    </div>
+                    {{/if}}
+                {{else}}
+                <div style="text-align: center; padding: 20px; background: rgba(239, 68, 68, 0.1); border-radius: 12px; border: 1px solid rgba(239, 68, 68, 0.3);">
+                    <i class="fas fa-exclamation-circle" style="color: #ef4444; font-size: 1.5rem; margin-bottom: 10px;"></i>
+                    <p style="color: #ef4444; margin: 0;">Kereta sudah berangkat atau sudah tiba, tidak bisa memesan.</p>
+                </div>
+                {{/if}}
+            {{/if}}
         {{else}}
         <div style="text-align: center; padding: 20px; background: rgba(251, 191, 36, 0.1); border-radius: 12px; border: 1px solid rgba(251, 191, 36, 0.3);">
             <i class="fas fa-info-circle" style="color: #fbbf24; margin-bottom: 10px;"></i>
-            <p style="color: #fbbf24; margin: 0;">Please <a href="/auth/login" style="color: #fef08a; text-decoration: underline;">login</a> to book this schedule</p>
+            <p style="color: #fbbf24; margin: 0;">Silakan <a href="/auth/login" style="color: #fef08a; text-decoration: underline;">login</a> untuk memesan jadwal ini</p>
         </div>
         {{/if}}
     </div>
 </div>
+
+<!-- Booking Modal -->
+{{#if isLoggedIn}}
+{{#if (not (eq userRole "ADMIN"))}}
+{{#if (gt seatInfo.available 0)}}
+<div class="modal-overlay" id="bookingModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title"><i class="fas fa-ticket-alt" style="color: #22c55e;"></i> Pesan Tiket</h3>
+            <button class="modal-close" onclick="closeModal('bookingModal')">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <form action="/bookings" method="POST">
+            <input type="hidden" name="scheduleId" value="{{schedule.id}}">
+            <div class="modal-body">
+                <p style="margin-bottom: 15px;">Kereta: <strong>{{schedule.train.name}}</strong></p>
+                <p style="margin-bottom: 15px;">Rute: <strong>{{schedule.originStation.code}} → {{schedule.destinationStation.code}}</strong></p>
+                <p style="margin-bottom: 15px;">Harga per kursi: <strong style="color: #22c55e;">{{formatPrice schedule.price}}</strong></p>
+                <p style="margin-bottom: 15px; color: #888;">Saldo Anda: <strong style="color: #22c55e;">{{formatBalance balance}}</strong></p>
+                <p style="margin-bottom: 20px; color: #3b82f6;"><i class="fas fa-chair"></i> Kursi tersedia: <strong>{{seatInfo.available}}</strong> dari {{seatInfo.total}}</p>
+                
+                <div class="form-group">
+                    <label class="form-label">Jumlah Kursi (max: {{seatInfo.available}})</label>
+                    <input type="number" name="seatCount" id="seatCountInput" class="form-control" value="1" min="1" max="{{seatInfo.available}}" required onchange="updateTotal()">
+                </div>
+                
+                <div style="padding: 15px; background: rgba(34, 197, 94, 0.1); border-radius: 10px; margin-top: 15px;">
+                    <p style="margin: 0; color: #888;">Total Harga:</p>
+                    <p style="font-size: 1.5rem; font-weight: bold; color: #22c55e; margin: 5px 0;" id="totalPrice">{{formatPrice schedule.price}}</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('bookingModal')">Batal</button>
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-shopping-cart"></i> Pesan Sekarang
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const pricePerSeat = {{schedule.price}};
+    const maxSeats = {{seatInfo.available}};
+
+    function openBookingModal() {
+        openModal('bookingModal');
+    }
+
+    function updateTotal() {
+        let seatCount = parseInt(document.getElementById('seatCountInput').value) || 1;
+        if (seatCount > maxSeats) {
+            seatCount = maxSeats;
+            document.getElementById('seatCountInput').value = maxSeats;
+        }
+        const total = pricePerSeat * seatCount;
+        document.getElementById('totalPrice').textContent = 'Rp ' + total.toLocaleString('id-ID');
+    }
+</script>
+{{/if}}
+{{/if}}
+{{/if}}
+
+{{else}}
+<div class="card">
+    <div class="empty-state">
+        <i class="fas fa-exclamation-triangle"></i>
+        <h3>Jadwal Tidak Ditemukan</h3>
+        <p>Jadwal yang Anda cari tidak ada atau telah dihapus.</p>
+        <a href="/schedules" class="btn btn-primary" style="margin-top: 20px;">
+            <i class="fas fa-arrow-left"></i> Kembali ke Jadwal
+        </a>
+    </div>
+</div>
+{{/if}}

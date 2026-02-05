@@ -1,34 +1,34 @@
 <div class="page-header">
-    <h1><i class="fas fa-train"></i> Trains Management</h1>
-    <p>Manage train fleet in the system</p>
+    <h1><i class="fas fa-train"></i> Kereta</h1>
+    <p>Kelola armada kereta dalam sistem</p>
 </div>
 
 {{#if (eq userRole "ADMIN")}}
 <div class="card" style="margin-bottom: 30px;">
     <div class="card-header">
-        <h3 class="card-title"><i class="fas fa-plus-circle"></i> Add New Train</h3>
+        <h3 class="card-title"><i class="fas fa-plus-circle"></i> Tambah Kereta Baru</h3>
     </div>
     <form action="/trains" method="POST">
         <div style="display: grid; grid-template-columns: 1fr 1fr 150px auto; gap: 15px; align-items: end;">
             <div class="form-group" style="margin: 0;">
-                <label class="form-label">Train Name</label>
+                <label class="form-label">Nama Kereta</label>
                 <input type="text" name="name" class="search-input" placeholder="e.g., Argo Bromo" required maxlength="20">
             </div>
             <div class="form-group" style="margin: 0;">
-                <label class="form-label">Type</label>
+                <label class="form-label">Tipe</label>
                 <select name="type" class="search-input" required>
-                    <option value="">Select Type</option>
+                    <option value="">Pilih Tipe</option>
                     <option value="EKSEKUTIF">Eksekutif</option>
                     <option value="BISNIS">Bisnis</option>
                     <option value="EKONOMI">Ekonomi</option>
                 </select>
             </div>
             <div class="form-group" style="margin: 0;">
-                <label class="form-label">Total Seats</label>
+                <label class="form-label">Total Kursi</label>
                 <input type="number" name="totalSeats" class="search-input" placeholder="e.g., 50" required min="1">
             </div>
             <button type="submit" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Add Train
+                <i class="fas fa-plus"></i> Tambah Kereta
             </button>
         </div>
     </form>
@@ -37,8 +37,8 @@
 
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title"><i class="fas fa-list"></i> All Trains</h3>
-        <span class="badge badge-info">{{trains.length}} trains</span>
+        <h3 class="card-title"><i class="fas fa-list"></i> Semua Kereta</h3>
+        <span class="badge badge-info">{{trains.length}} kereta</span>
     </div>
     
     {{#if trains.length}}
@@ -47,12 +47,12 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Train Name</th>
-                    <th>Type</th>
-                    <th>Total Seats</th>
-                    <th>Created</th>
-                    {{#if (eq userRole "ADMIN")}}
-                    <th>Actions</th>
+                    <th>Nama Kereta</th>
+                    <th>Tipe</th>
+                    <th>Total Kursi</th>
+                    <th>Dibuat</th>
+                    {{#if (eq ../userRole "ADMIN")}}
+                    <th>Aksi</th>
                     {{/if}}
                 </tr>
             </thead>
@@ -77,15 +77,15 @@
                         <span class="badge badge-info">{{this.type}}</span>
                         {{/if}}
                     </td>
-                    <td>{{this.totalSeats}} seats</td>
+                    <td>{{this.totalSeats}} kursi</td>
                     <td>{{formatDate this.createdAt}}</td>
                     {{#if (eq ../userRole "ADMIN")}}
                     <td>
                         <div class="action-btns">
-                            <a href="/trains/{{this.id}}" class="btn-icon edit" title="View Details">
+                            <a href="/trains/{{this.id}}" class="btn-icon edit" title="Lihat Detail">
                                 <i class="fas fa-eye"></i>
                             </a>
-                            <button class="btn-icon delete" onclick="deleteTrain({{this.id}}, '{{this.name}}')" title="Delete">
+                            <button class="btn-icon delete" onclick="deleteTrain({{this.id}}, '{{this.name}}')" title="Hapus">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
@@ -109,18 +109,18 @@
 <div class="modal-overlay" id="deleteModal">
     <div class="modal">
         <div class="modal-header">
-            <h3 class="modal-title"><i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i> Confirm Delete</h3>
+            <h3 class="modal-title"><i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i> Konfirmasi Hapus</h3>
             <button class="modal-close" onclick="closeModal('deleteModal')">
                 <i class="fas fa-times"></i>
             </button>
         </div>
         <div class="modal-body">
-            <p>Are you sure you want to delete train "<span id="deleteTrainName"></span>"?</p>
-            <p style="color: #888; font-size: 0.9rem; margin-top: 10px;">This action cannot be undone. Make sure this train is not used in any schedules.</p>
+            <p>Apakah Anda yakin ingin menghapus kereta "<span id="deleteTrainName"></span>"?</p>
+            <p style="color: #888; font-size: 0.9rem; margin-top: 10px;">Tindakan ini tidak dapat dibatalkan. Pastikan kereta ini tidak digunakan dalam jadwal apapun.</p>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-secondary" onclick="closeModal('deleteModal')">Cancel</button>
-            <button class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+            <button class="btn btn-secondary" onclick="closeModal('deleteModal')">Batal</button>
+            <button class="btn btn-danger" id="confirmDeleteBtn">Hapus</button>
         </div>
     </div>
 </div>
@@ -143,14 +143,14 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    window.location.href = '/trains?message=Train deleted successfully&messageType=success';
+                    window.location.href = '/trains?message=Kereta berhasil dihapus&messageType=success';
                 } else {
                     closeModal('deleteModal');
-                    showPopup('danger', result.message || 'Failed to delete train. It may be used in schedules.');
+                    showPopup('danger', result.message || 'Gagal menghapus kereta. Mungkin kereta ini digunakan dalam jadwal.');
                 }
             } catch (error) {
                 closeModal('deleteModal');
-                showPopup('danger', 'Failed to delete train');
+                showPopup('danger', 'Gagal menghapus kereta');
             }
         }
     });

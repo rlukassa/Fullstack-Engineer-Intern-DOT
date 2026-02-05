@@ -1,6 +1,10 @@
+import { BookingStatus } from '../entities/booking.entity';
+
 export class CreateBookingDto {
   userId: number;
   bookingCode: string;
   scheduleId: number;
-  status?: string;
+  seatCount?: number;
+  totalPrice?: number;
+  status?: BookingStatus;
 }

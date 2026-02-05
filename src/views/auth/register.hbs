@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - Train Booking System</title>
+    <title>Daftar - SobatKereta</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -359,8 +359,8 @@
                 <div class="register-logo">
                     <i class="fas fa-user-plus"></i>
                 </div>
-                <h1>Create Account</h1>
-                <p>Join us and start booking your train tickets</p>
+                <h1>Buat Akun</h1>
+                <p>Bergabunglah dengan kami dan mulai pesan tiket kereta Anda</p>
             </div>
             
             {{#if error}}
@@ -372,7 +372,7 @@
             
             <div class="role-badge">
                 <i class="fas fa-user-check"></i>
-                You will be registered as a <strong>Customer</strong>
+                Anda akan didaftarkan sebagai <strong>Customer</strong>
             </div>
             
             <form action="/auth/register" method="POST" id="registerForm">
@@ -383,7 +383,7 @@
                             type="text" 
                             class="form-control" 
                             name="username" 
-                            placeholder="Choose a username"
+                            placeholder="Masukkan nama pengguna Anda"
                             required
                             minlength="3"
                             maxlength="50"
@@ -394,13 +394,13 @@
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">Email Address <span class="required">*</span></label>
+                    <label class="form-label">Alamat Email <span class="required">*</span></label>
                     <div class="input-wrapper">
                         <input 
                             type="email" 
                             class="form-control" 
                             name="email" 
-                            placeholder="Enter your email"
+                            placeholder="Masukkan alamat email Anda"
                             required
                             autocomplete="email"
                         >
@@ -416,7 +416,7 @@
                             class="form-control" 
                             name="password" 
                             id="password"
-                            placeholder="Create a password"
+                            placeholder="Buat kata sandi"
                             required
                             minlength="4"
                             autocomplete="new-password"
@@ -437,14 +437,14 @@
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">Confirm Password <span class="required">*</span></label>
+                    <label class="form-label">Konfirmasi Kata Sandi <span class="required">*</span></label>
                     <div class="input-wrapper">
                         <input 
                             type="password" 
                             class="form-control" 
                             name="confirmPassword" 
                             id="confirmPassword"
-                            placeholder="Confirm your password"
+                            placeholder="Konfirmasi kata sandi Anda"
                             required
                             autocomplete="new-password"
                         >
@@ -456,14 +456,14 @@
                 </div>
                 
                 <button type="submit" class="btn-register">
-                    <i class="fas fa-user-plus"></i> Create Account
+                    <i class="fas fa-user-plus"></i> Buat Akun
                 </button>
             </form>
             
             <div class="register-footer">
-                <p>Already have an account? <a href="/auth/login">Sign in</a></p>
+                <p>Sudah punya akun? <a href="/auth/login">Masuk</a></p>
                 <a href="/" class="back-home">
-                    <i class="fas fa-arrow-left"></i> Back to Home
+                    <i class="fas fa-arrow-left"></i> Kembali ke Beranda
                 </a>
             </div>
         </div>
@@ -504,14 +504,14 @@
             if (/[A-Z]/.test(password) && /[a-z]/.test(password)) strength++;
             if (/[0-9]/.test(password) || /[^A-Za-z0-9]/.test(password)) strength++;
             
-            const strengthLevels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
+            const strengthLevels = ['', 'Lemah', 'Cukup', 'Baik', 'Kuat'];
             const strengthColors = ['', 'weak', 'weak', 'medium', 'strong'];
             
             for (let i = 0; i < strength; i++) {
                 bars[i].classList.add(strengthColors[strength]);
             }
             
-            strengthText.textContent = strength > 0 ? `Password strength: ${strengthLevels[strength]}` : '';
+            strengthText.textContent = strength > 0 ? `Kekuatan kata sandi: ${strengthLevels[strength]}` : '';
             strengthText.style.color = strength <= 2 ? '#ef4444' : strength === 3 ? '#eab308' : '#22c55e';
         }
         
@@ -522,7 +522,7 @@
             
             if (password !== confirmPassword) {
                 e.preventDefault();
-                alert('Passwords do not match!');
+                alert('Kata sandi tidak cocok!');
             }
         });
     </script>

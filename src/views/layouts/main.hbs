@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{title}} - Train Booking System</title>
+    <title>{{title}} - SobatKereta</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -672,10 +672,19 @@
             <nav class="navbar">
                 <a href="/" class="navbar-brand">
                     <i class="fas fa-train"></i>
-                    Train Booking
+                    SobatKereta
                 </a>
                 <div class="navbar-nav">
                     {{#if isLoggedIn}}
+                        {{#if (not (eq userRole "ADMIN"))}}
+                        <div class="balance-display" style="display: flex; align-items: center; gap: 10px; padding: 8px 15px; background: rgba(34, 197, 94, 0.15); border-radius: 10px; margin-right: 10px;">
+                            <i class="fas fa-wallet" style="color: #22c55e;"></i>
+                            <span style="color: #22c55e; font-weight: 600;">{{formatBalance balance}}</span>
+                            <button onclick="openModal('topupModal')" class="btn btn-sm btn-success" style="padding: 5px 12px; margin-left: 5px;">
+                                <i class="fas fa-plus"></i> Top Up
+                            </button>
+                        </div>
+                        {{/if}}
                         <div class="user-info">
                             <i class="fas fa-user-circle"></i>
                             <span>{{username}}</span>
@@ -689,7 +698,7 @@
                             <i class="fas fa-sign-in-alt"></i> Login
                         </a>
                         <a href="/auth/register" class="nav-link">
-                            <i class="fas fa-user-plus"></i> Register
+                            <i class="fas fa-user-plus"></i> Daftar
                         </a>
                     {{/if}}
                 </div>
@@ -700,6 +709,48 @@
             </div>
         </div>
     </div>
+
+    <!-- Top Up Modal -->
+    {{#if isLoggedIn}}
+    {{#if (not (eq userRole "ADMIN"))}}
+    <div class="modal-overlay" id="topupModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-wallet" style="color: #22c55e;"></i> Top Up Saldo</h3>
+                <button class="modal-close" onclick="closeModal('topupModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form action="/auth/topup" method="POST">
+                <div class="modal-body">
+                    <p style="margin-bottom: 20px; color: #888;">Saldo saat ini: <strong style="color: #22c55e;">{{formatBalance balance}}</strong></p>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Jumlah Top Up (Rupiah)</label>
+                        <input type="number" name="amount" class="form-control" placeholder="Masukkan jumlah" min="10000" max="10000000" step="10000" required>
+                        <small style="color: #888; margin-top: 5px; display: block;">Min: Rp 10.000 | Max: Rp 10.000.000</small>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;">
+                        <button type="button" class="btn btn-secondary btn-sm topup-preset" data-amount="50000">Rp 50.000</button>
+                        <button type="button" class="btn btn-secondary btn-sm topup-preset" data-amount="100000">Rp 100.000</button>
+                        <button type="button" class="btn btn-secondary btn-sm topup-preset" data-amount="200000">Rp 200.000</button>
+                        <button type="button" class="btn btn-secondary btn-sm topup-preset" data-amount="500000">Rp 500.000</button>
+                        <button type="button" class="btn btn-secondary btn-sm topup-preset" data-amount="1000000">Rp 1.000.000</button>
+                        <button type="button" class="btn btn-secondary btn-sm topup-preset" data-amount="2000000">Rp 2.000.000</button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('topupModal')">Batal</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-plus"></i> Top Up Sekarang
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    {{/if}}
+    {{/if}}
 
     {{> popup}}
     
@@ -731,6 +782,14 @@
                 });
                 document.body.style.overflow = '';
             }
+        });
+
+        // Top Up preset buttons
+        document.querySelectorAll('.topup-preset').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const amount = this.getAttribute('data-amount');
+                document.querySelector('input[name="amount"]').value = amount;
+            });
         });
 
         {{#if message}}

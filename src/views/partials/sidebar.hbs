@@ -3,13 +3,13 @@
     <div class="sidebar-header">
         <div class="sidebar-logo">
             <i class="fas fa-train"></i>
-            <span>Admin Panel</span>
+            <span>Sidebar</span>
         </div>
     </div>
     
     <nav class="sidebar-nav">
         <div class="nav-section">
-            <span class="nav-section-title">Main Menu</span>
+            <span class="nav-section-title">Menu Utama</span>
             <a href="/" class="sidebar-link {{#if activePage.home}}active{{/if}}">
                 <i class="fas fa-home"></i>
                 <span>Dashboard</span>
@@ -17,27 +17,27 @@
         </div>
         
         <div class="nav-section">
-            <span class="nav-section-title">Management</span>
+            <span class="nav-section-title">Manajemen</span>
             <a href="/trains" class="sidebar-link {{#if activePage.trains}}active{{/if}}">
                 <i class="fas fa-train"></i>
-                <span>Trains</span>
+                <span>Kereta</span>
             </a>
             <a href="/schedules" class="sidebar-link {{#if activePage.schedules}}active{{/if}}">
                 <i class="fas fa-calendar-alt"></i>
-                <span>Schedules</span>
+                <span>Jadwal</span>
             </a>
             <a href="/stations" class="sidebar-link {{#if activePage.stations}}active{{/if}}">
                 <i class="fas fa-map-marker-alt"></i>
-                <span>Stations</span>
+                <span>Stasiun</span>
             </a>
         </div>
         
         {{#if (eq userRole "ADMIN")}}
         <div class="nav-section">
-            <span class="nav-section-title">Bookings</span>
+            <span class="nav-section-title">Pemesanan</span>
             <a href="/bookings" class="sidebar-link {{#if activePage.bookings}}active{{/if}}">
                 <i class="fas fa-ticket-alt"></i>
-                <span>All Bookings</span>
+                <span>Semua Pemesanan</span>
             </a>
         </div>
         {{/if}}

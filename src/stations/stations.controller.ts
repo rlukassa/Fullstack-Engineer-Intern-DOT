@@ -11,7 +11,7 @@ export class StationsController {
   async create(@Body() createStationDto: CreateStationDto, @Res() res: Response) {
     try {
       await this.stationsService.create(createStationDto);
-      return res.redirect('/stations?message=Station created successfully&messageType=success');
+      return res.redirect('/stations?message=Stasiun berhasil dibuat&messageType=success');
     } catch (error: any) {
       return res.redirect(`/stations?message=${encodeURIComponent(error.message)}&messageType=danger`);
     }
@@ -32,6 +32,7 @@ export class StationsController {
       isLoggedIn: session?.isLoggedIn || false,
       username: session?.username || 'Guest',
       userRole: session?.role || '',
+      balance: session?.balance || 0,
       message,
       messageType,
       activePage: { stations: true },
@@ -44,11 +45,12 @@ export class StationsController {
     const session = (req as any).session;
     const station = await this.stationsService.findOne(id);
     return {
-      title: station ? `Station: ${station.name}` : 'Station Not Found',
+      title: station ? `Stasiun: ${station.name}` : 'Stasiun Tidak Ditemukan',
       station,
       isLoggedIn: session?.isLoggedIn || false,
       username: session?.username || 'Guest',
       userRole: session?.role || '',
+      balance: session?.balance || 0,
       activePage: { stations: true },
     };
   }
@@ -57,7 +59,7 @@ export class StationsController {
   async remove(@Param('id') id: number, @Res() res: Response) {
     try {
       await this.stationsService.remove(id);
-      return res.json({ success: true, message: 'Station deleted successfully' });
+      return res.json({ success: true, message: 'Stasiun berhasil dihapus' });
     } catch (error: any) {
       return res.status(400).json({ success: false, message: error.message });
     }

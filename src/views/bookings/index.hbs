@@ -1,12 +1,24 @@
 <div class="page-header">
-    <h1><i class="fas fa-ticket-alt"></i> My Bookings</h1>
-    <p>View and manage your train ticket bookings</p>
+    <h1><i class="fas fa-ticket-alt"></i> Pemesananku</h1>
+    <p>Lihat dan kelola pemesanan tiket kereta Anda</p>
 </div>
+
+{{#if (not (eq userRole "ADMIN"))}}
+<div style="padding: 15px 20px; background: rgba(34, 197, 94, 0.1); border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+    <div>
+        <span style="color: #888;">Saldo Anda:</span>
+        <strong style="color: #22c55e; font-size: 1.3rem; margin-left: 10px;">{{formatBalance balance}}</strong>
+    </div>
+    <button onclick="openModal('topupModal')" class="btn btn-success btn-sm">
+        <i class="fas fa-plus"></i> Top Up Saldo
+    </button>
+</div>
+{{/if}}
 
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title"><i class="fas fa-list"></i> Booking History</h3>
-        <span class="badge badge-info">{{bookings.length}} bookings</span>
+        <h3 class="card-title"><i class="fas fa-list"></i> Riwayat Pemesanan</h3>
+        <span class="badge badge-info">{{bookings.length}} pemesanan</span>
     </div>
     
     {{#if bookings.length}}
@@ -14,21 +26,22 @@
         <table class="data-table">
             <thead>
                 <tr>
-                    <th>Booking ID</th>
-                    <th>Train</th>
-                    <th>Route</th>
-                    <th>Departure</th>
-                    <th>Seats</th>
-                    <th>Total Price</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th>Kode Booking</th>
+                    <th>Kereta</th>
+                    <th>Rute</th>
+                    <th>Keberangkatan</th>
+                    <th>Kursi</th>
+                    <th>Total Harga</th>
+                    <th>Status Pembayaran</th>
+                    <th>Status Kereta</th>
+                    <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
                 {{#each bookings}}
                 <tr>
                     <td>
-                        <span style="font-weight: bold; color: #3b82f6;">#{{this.id}}</span>
+                        <span style="font-weight: bold; color: #3b82f6; font-family: monospace;">{{this.bookingCode}}</span>
                     </td>
                     <td>
                         <div style="display: flex; align-items: center; gap: 10px;">
@@ -50,31 +63,49 @@
                     </td>
                     <td>{{formatDate this.schedule.departureTime}}</td>
                     <td>
-                        <span class="badge badge-primary">{{this.seatCount}} seat(s)</span>
+                        <span class="badge badge-primary">{{this.seatCount}} kursi</span>
                     </td>
                     <td>
                         <strong style="color: #22c55e;">{{formatPrice this.totalPrice}}</strong>
                     </td>
                     <td>
                         {{#if (eq this.status "CONFIRMED")}}
-                        <span class="badge badge-success">Confirmed</span>
+                        <span class="badge badge-success"><i class="fas fa-check-circle"></i> Terkonfirmasi</span>
                         {{else if (eq this.status "PENDING")}}
-                        <span class="badge badge-warning">Pending</span>
+                        <span class="badge badge-warning"><i class="fas fa-hourglass-half"></i> Menunggu</span>
                         {{else if (eq this.status "CANCELLED")}}
-                        <span class="badge badge-danger">Cancelled</span>
+                        <span class="badge badge-danger"><i class="fas fa-times-circle"></i> Dibatalkan</span>
                         {{else}}
                         <span class="badge badge-info">{{this.status}}</span>
                         {{/if}}
                     </td>
                     <td>
+                        {{#if (eq this.schedule.journeyStatus "BELUM_BERANGKAT")}}
+                        <span class="badge badge-warning"><i class="fas fa-clock"></i> Belum Berangkat</span>
+                        {{else if (eq this.schedule.journeyStatus "DALAM_PERJALANAN")}}
+                        <span class="badge badge-info"><i class="fas fa-train"></i> Dalam Perjalanan</span>
+                        {{else if (eq this.schedule.journeyStatus "TIBA_LOKASI")}}
+                        <span class="badge badge-success"><i class="fas fa-map-marker-alt"></i> Tiba Lokasi</span>
+                        {{else}}
+                        <span class="badge badge-secondary">{{this.schedule.journeyStatus}}</span>
+                        {{/if}}
+                    </td>
+                    <td>
                         <div class="action-btns">
-                            <a href="/bookings/{{this.id}}" class="btn-icon edit" title="View Details">
+                            <a href="/bookings/{{this.id}}" class="btn-icon edit" title="Lihat Detail">
                                 <i class="fas fa-eye"></i>
                             </a>
                             {{#if (eq this.status "PENDING")}}
-                            <button class="btn-icon delete" onclick="cancelBooking({{this.id}})" title="Cancel Booking">
+                            {{#if (eq this.schedule.journeyStatus "BELUM_BERANGKAT")}}
+                            <form action="/bookings/{{this.id}}/pay" method="POST" style="display: inline;">
+                                <button type="submit" class="btn-icon" style="background: rgba(34, 197, 94, 0.2); color: #22c55e;" title="Bayar Sekarang">
+                                    <i class="fas fa-credit-card"></i>
+                                </button>
+                            </form>
+                            <button class="btn-icon delete" onclick="cancelBooking({{this.id}})" title="Batalkan Pemesanan">
                                 <i class="fas fa-times"></i>
                             </button>
+                            {{/if}}
                             {{/if}}
                         </div>
                     </td>
@@ -86,31 +117,71 @@
     {{else}}
     <div class="empty-state">
         <i class="fas fa-ticket-alt"></i>
-        <h3>No Bookings Yet</h3>
-        <p>You haven't made any bookings yet.</p>
+        <h3>Belum Ada Pemesanan</h3>
+        <p>Anda belum melakukan pemesanan apapun.</p>
         <a href="/schedules" class="btn btn-primary" style="margin-top: 20px;">
-            <i class="fas fa-calendar-alt"></i> Browse Schedules
+            <i class="fas fa-calendar-alt"></i> Jelajahi Jadwal
         </a>
     </div>
     {{/if}}
 </div>
 
+<!-- Top Up Modal (Duplicate for this page) -->
+{{#if (not (eq userRole "ADMIN"))}}
+<div class="modal-overlay" id="topupModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title"><i class="fas fa-wallet" style="color: #22c55e;"></i> Top Up Saldo</h3>
+            <button class="modal-close" onclick="closeModal('topupModal')">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <form action="/auth/topup" method="POST">
+            <div class="modal-body">
+                <p style="margin-bottom: 20px; color: #888;">Saldo saat ini: <strong style="color: #22c55e;">{{formatBalance balance}}</strong></p>
+                
+                <div class="form-group">
+                    <label class="form-label">Jumlah Top Up (Rupiah)</label>
+                    <input type="number" name="amount" class="form-control" placeholder="Masukkan jumlah" min="10000" max="10000000" step="10000" required>
+                    <small style="color: #888; margin-top: 5px; display: block;">Min: Rp 10.000 | Max: Rp 10.000.000</small>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;">
+                    <button type="button" class="btn btn-secondary btn-sm topup-preset" data-amount="50000">Rp 50.000</button>
+                    <button type="button" class="btn btn-secondary btn-sm topup-preset" data-amount="100000">Rp 100.000</button>
+                    <button type="button" class="btn btn-secondary btn-sm topup-preset" data-amount="200000">Rp 200.000</button>
+                    <button type="button" class="btn btn-secondary btn-sm topup-preset" data-amount="500000">Rp 500.000</button>
+                    <button type="button" class="btn btn-secondary btn-sm topup-preset" data-amount="1000000">Rp 1.000.000</button>
+                    <button type="button" class="btn btn-secondary btn-sm topup-preset" data-amount="2000000">Rp 2.000.000</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('topupModal')">Batal</button>
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-plus"></i> Top Up Sekarang
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{{/if}}
+
 <!-- Cancel Booking Modal -->
 <div class="modal-overlay" id="cancelModal">
     <div class="modal">
         <div class="modal-header">
-            <h3 class="modal-title"><i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i> Cancel Booking</h3>
+            <h3 class="modal-title"><i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i> Batalkan Pemesanan</h3>
             <button class="modal-close" onclick="closeModal('cancelModal')">
                 <i class="fas fa-times"></i>
             </button>
         </div>
         <div class="modal-body">
-            <p>Are you sure you want to cancel this booking?</p>
-            <p style="color: #888; font-size: 0.9rem; margin-top: 10px;">This action cannot be undone.</p>
+            <p>Apakah Anda yakin ingin membatalkan pemesanan ini?</p>
+            <p style="color: #888; font-size: 0.9rem; margin-top: 10px;">Jika sudah dibayar, saldo akan dikembalikan.</p>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-secondary" onclick="closeModal('cancelModal')">Keep Booking</button>
-            <button class="btn btn-danger" id="confirmCancelBtn">Cancel Booking</button>
+            <button class="btn btn-secondary" onclick="closeModal('cancelModal')">Pertahankan Pemesanan</button>
+            <button class="btn btn-danger" id="confirmCancelBtn">Batalkan Pemesanan</button>
         </div>
     </div>
 </div>
@@ -132,15 +203,27 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    window.location.href = '/bookings?message=Booking cancelled successfully&messageType=success';
+                    let message = 'Pemesanan berhasil dibatalkan';
+                    if (result.refundAmount && result.refundAmount > 0) {
+                        message += '. Refund Rp ' + result.refundAmount.toLocaleString('id-ID') + ' telah dikembalikan';
+                    }
+                    window.location.href = '/bookings?message=' + encodeURIComponent(message) + '&messageType=success';
                 } else {
                     closeModal('cancelModal');
-                    showPopup('danger', result.message || 'Failed to cancel booking');
+                    showPopup('danger', result.message || 'Gagal membatalkan pemesanan');
                 }
             } catch (error) {
                 closeModal('cancelModal');
-                showPopup('danger', 'Failed to cancel booking');
+                showPopup('danger', 'Gagal membatalkan pemesanan');
             }
         }
+    });
+
+    // Top Up preset buttons
+    document.querySelectorAll('.topup-preset').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const amount = this.getAttribute('data-amount');
+            document.querySelector('#topupModal input[name="amount"]').value = amount;
+        });
     });
 </script>

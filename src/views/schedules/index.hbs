@@ -1,15 +1,72 @@
 <div class="page-header">
-    <h1><i class="fas fa-calendar-alt"></i> Schedules Management</h1>
-    <p>Manage train schedules and routes</p>
+    <h1><i class="fas fa-calendar-alt"></i> Jadwal Kereta</h1>
+    <p>Kelola jadwal dan rute kereta</p>
 </div>
+
+{{#if (eq userRole "ADMIN")}}
+<!-- Admin: Form Tambah Jadwal -->
+<div class="card" style="margin-bottom: 30px;">
+    <div class="card-header">
+        <h3 class="card-title"><i class="fas fa-plus-circle"></i> Tambah Jadwal Baru</h3>
+    </div>
+    <form action="/schedules" method="POST">
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+            <div class="form-group" style="margin: 0;">
+                <label class="form-label">Kereta</label>
+                <select name="trainId" class="search-input" required>
+                    <option value="">Pilih Kereta</option>
+                    {{#each trains}}
+                    <option value="{{this.id}}">{{this.name}} ({{this.type}})</option>
+                    {{/each}}
+                </select>
+            </div>
+            <div class="form-group" style="margin: 0;">
+                <label class="form-label">Stasiun Asal</label>
+                <select name="originStationId" class="search-input" required>
+                    <option value="">Pilih Stasiun Asal</option>
+                    {{#each stations}}
+                    <option value="{{this.id}}">{{this.code}} - {{this.name}}</option>
+                    {{/each}}
+                </select>
+            </div>
+            <div class="form-group" style="margin: 0;">
+                <label class="form-label">Stasiun Tujuan</label>
+                <select name="destinationStationId" class="search-input" required>
+                    <option value="">Pilih Stasiun Tujuan</option>
+                    {{#each stations}}
+                    <option value="{{this.id}}">{{this.code}} - {{this.name}}</option>
+                    {{/each}}
+                </select>
+            </div>
+            <div class="form-group" style="margin: 0;">
+                <label class="form-label">Waktu Keberangkatan</label>
+                <input type="datetime-local" name="departureTime" class="search-input" required>
+            </div>
+            <div class="form-group" style="margin: 0;">
+                <label class="form-label">Waktu Kedatangan</label>
+                <input type="datetime-local" name="arrivalTime" class="search-input" required>
+            </div>
+            <div class="form-group" style="margin: 0;">
+                <label class="form-label">Harga (Rp)</label>
+                <input type="number" name="price" class="search-input" placeholder="e.g., 150000" required min="1000">
+            </div>
+        </div>
+        <div style="margin-top: 15px;">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Tambah Jadwal
+            </button>
+        </div>
+    </form>
+</div>
+{{/if}}
 
 <!-- Search Box -->
 <div class="card" style="margin-bottom: 20px;">
     <form action="/schedules" method="GET">
         <div class="search-box" style="margin: 0;">
-            <input type="text" name="search" class="search-input" placeholder="Search by train name, origin or destination station..." value="{{search}}">
+            <input type="text" name="search" class="search-input" placeholder="Cari berdasarkan nama kereta, stasiun asal atau tujuan..." value="{{search}}">
             <button type="submit" class="btn btn-primary">
-                <i class="fas fa-search"></i> Search
+                <i class="fas fa-search"></i> Cari
             </button>
             {{#if search}}
             <a href="/schedules" class="btn btn-secondary">
@@ -22,8 +79,8 @@
 
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title"><i class="fas fa-list"></i> All Schedules</h3>
-        <span class="badge badge-info">{{schedules.length}} schedules</span>
+        <h3 class="card-title"><i class="fas fa-list"></i> Semua Jadwal</h3>
+        <span class="badge badge-info">{{schedules.length}} jadwal</span>
     </div>
     
     {{#if schedules.length}}
@@ -32,14 +89,13 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Train</th>
-                    <th>Route</th>
-                    <th>Departure</th>
-                    <th>Arrival</th>
-                    <th>Price</th>
-                    {{#if (eq userRole "ADMIN")}}
-                    <th>Actions</th>
-                    {{/if}}
+                    <th>Kereta</th>
+                    <th>Rute</th>
+                    <th>Keberangkatan</th>
+                    <th>Kedatangan</th>
+                    <th>Harga</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -70,18 +126,36 @@
                     <td>{{formatDate this.departureTime}}</td>
                     <td>{{formatDate this.arrivalTime}}</td>
                     <td><strong style="color: #22c55e;">{{formatPrice this.price}}</strong></td>
-                    {{#if (eq ../userRole "ADMIN")}}
+                    <td>
+                        {{#if (eq this.journeyStatus "BELUM_BERANGKAT")}}
+                        <span class="badge badge-warning"><i class="fas fa-clock"></i> Belum Berangkat</span>
+                        {{else if (eq this.journeyStatus "DALAM_PERJALANAN")}}
+                        <span class="badge badge-info"><i class="fas fa-train"></i> Dalam Perjalanan</span>
+                        {{else if (eq this.journeyStatus "TIBA_LOKASI")}}
+                        <span class="badge badge-success"><i class="fas fa-check-circle"></i> Tiba Lokasi</span>
+                        {{else}}
+                        <span class="badge badge-secondary">{{this.journeyStatus}}</span>
+                        {{/if}}
+                    </td>
                     <td>
                         <div class="action-btns">
-                            <a href="/schedules/{{this.id}}" class="btn-icon edit" title="View Details">
+                            <a href="/schedules/{{this.id}}" class="btn-icon edit" title="Lihat Detail">
                                 <i class="fas fa-eye"></i>
                             </a>
-                            <button class="btn-icon delete" onclick="deleteSchedule({{this.id}})" title="Delete">
+                            {{#if (eq this.journeyStatus "BELUM_BERANGKAT")}}
+                            {{#if (not (eq ../userRole "ADMIN"))}}
+                            <button class="btn-icon" style="background: rgba(34, 197, 94, 0.2); color: #22c55e;" onclick="openBookingModal({{this.id}}, '{{this.train.name}}', {{this.price}})" title="Pesan Tiket">
+                                <i class="fas fa-ticket-alt"></i>
+                            </button>
+                            {{/if}}
+                            {{/if}}
+                            {{#if (eq ../userRole "ADMIN")}}
+                            <button class="btn-icon delete" onclick="deleteSchedule({{this.id}})" title="Hapus">
                                 <i class="fas fa-trash"></i>
                             </button>
+                            {{/if}}
                         </div>
                     </td>
-                    {{/if}}
                 </tr>
                 {{/each}}
             </tbody>
@@ -91,33 +165,74 @@
     <div class="empty-state">
         <i class="fas fa-calendar-alt"></i>
         <h3>Masih Kosong</h3>
-        <p>{{#if search}}No schedules found for "{{search}}"{{else}}Menunggu Admin menambahkan jadwal{{/if}}</p>
+        <p>{{#if search}}Tidak ada jadwal ditemukan untuk "{{search}}"{{else}}Menunggu Admin menambahkan jadwal{{/if}}</p>
     </div>
     {{/if}}
 </div>
+
+<!-- Booking Modal -->
+{{#if isLoggedIn}}
+{{#if (not (eq userRole "ADMIN"))}}
+<div class="modal-overlay" id="bookingModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title"><i class="fas fa-ticket-alt" style="color: #22c55e;"></i> Pesan Tiket</h3>
+            <button class="modal-close" onclick="closeModal('bookingModal')">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <form action="/bookings" method="POST">
+            <input type="hidden" name="scheduleId" id="bookingScheduleId">
+            <div class="modal-body">
+                <p style="margin-bottom: 15px;">Kereta: <strong id="bookingTrainName"></strong></p>
+                <p style="margin-bottom: 15px;">Harga per kursi: <strong id="bookingPrice" style="color: #22c55e;"></strong></p>
+                <p style="margin-bottom: 20px; color: #888;">Saldo Anda: <strong style="color: #22c55e;">{{formatBalance balance}}</strong></p>
+                
+                <div class="form-group">
+                    <label class="form-label">Jumlah Kursi</label>
+                    <input type="number" name="seatCount" id="bookingSeatCount" class="form-control" value="1" min="1" max="10" required onchange="updateTotalPrice()">
+                </div>
+                
+                <div style="padding: 15px; background: rgba(34, 197, 94, 0.1); border-radius: 10px; margin-top: 15px;">
+                    <p style="margin: 0; color: #888;">Total Harga:</p>
+                    <p style="font-size: 1.5rem; font-weight: bold; color: #22c55e; margin: 5px 0;" id="bookingTotalPrice">Rp 0</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('bookingModal')">Batal</button>
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-shopping-cart"></i> Pesan Sekarang
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{{/if}}
+{{/if}}
 
 <!-- Delete Confirmation Modal -->
 <div class="modal-overlay" id="deleteModal">
     <div class="modal">
         <div class="modal-header">
-            <h3 class="modal-title"><i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i> Confirm Delete</h3>
+            <h3 class="modal-title"><i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i> Konfirmasi Hapus</h3>
             <button class="modal-close" onclick="closeModal('deleteModal')">
                 <i class="fas fa-times"></i>
             </button>
         </div>
         <div class="modal-body">
-            <p>Are you sure you want to delete this schedule?</p>
-            <p style="color: #888; font-size: 0.9rem; margin-top: 10px;">This action cannot be undone.</p>
+            <p>Apakah Anda yakin ingin menghapus jadwal ini?</p>
+            <p style="color: #888; font-size: 0.9rem; margin-top: 10px;">Tindakan ini tidak dapat dibatalkan.</p>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-secondary" onclick="closeModal('deleteModal')">Cancel</button>
-            <button class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+            <button class="btn btn-secondary" onclick="closeModal('deleteModal')">Batal</button>
+            <button class="btn btn-danger" id="confirmDeleteBtn">Hapus</button>
         </div>
     </div>
 </div>
 
 <script>
     let scheduleToDelete = null;
+    let currentPrice = 0;
     
     function deleteSchedule(id) {
         scheduleToDelete = id;
@@ -133,15 +248,31 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    window.location.href = '/schedules?message=Schedule deleted successfully&messageType=success';
+                    window.location.href = '/schedules?message=Jadwal berhasil dihapus&messageType=success';
                 } else {
                     closeModal('deleteModal');
-                    showPopup('danger', result.message || 'Failed to delete schedule');
+                    showPopup('danger', result.message || 'Gagal menghapus jadwal');
                 }
             } catch (error) {
                 closeModal('deleteModal');
-                showPopup('danger', 'Failed to delete schedule');
+                showPopup('danger', 'Gagal menghapus jadwal');
             }
         }
     });
+
+    function openBookingModal(scheduleId, trainName, price) {
+        document.getElementById('bookingScheduleId').value = scheduleId;
+        document.getElementById('bookingTrainName').textContent = trainName;
+        document.getElementById('bookingPrice').textContent = 'Rp ' + price.toLocaleString('id-ID');
+        document.getElementById('bookingSeatCount').value = 1;
+        currentPrice = price;
+        updateTotalPrice();
+        openModal('bookingModal');
+    }
+
+    function updateTotalPrice() {
+        const seatCount = parseInt(document.getElementById('bookingSeatCount').value) || 1;
+        const total = currentPrice * seatCount;
+        document.getElementById('bookingTotalPrice').textContent = 'Rp ' + total.toLocaleString('id-ID');
+    }
 </script>

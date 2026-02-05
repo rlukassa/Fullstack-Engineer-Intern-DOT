@@ -1,3 +1,5 @@
+import { JourneyStatus } from '../entities/schedule.entity';
+
 export class CreateScheduleDto {
   trainId: number;
   originStationId: number;
@@ -5,4 +7,5 @@ export class CreateScheduleDto {
   departureTime: Date;
   arrivalTime: Date;
   price: number;
+  journeyStatus?: JourneyStatus;
 }

@@ -5,9 +5,18 @@ import {
   ManyToOne,
   JoinColumn,
   CreateDateColumn,
+  UpdateDateColumn,
+  DeleteDateColumn,
 } from 'typeorm';
 import { User } from '../../auth/entities/user.entity';
 import { Schedule } from '../../schedules/entities/schedule.entity';
+
+// Status Booking: PENDING (Menunggu), CONFIRMED (Terkonfirmasi), CANCELLED (Dibatalkan)
+export enum BookingStatus {
+  PENDING = 'PENDING',      // Menunggu Pembayaran
+  CONFIRMED = 'CONFIRMED',  // Terkonfirmasi / Sudah Bayar
+  CANCELLED = 'CANCELLED',  // Dibatalkan
+}
 
 @Entity('bookings')
 export class Booking {
@@ -23,10 +32,25 @@ export class Booking {
   @Column()
   scheduleId: number;
 
-  @Column({ type: 'varchar', default: 'PENDING' })
-  status: string; // PENDING / PAID / CANCELLED
+  @Column({ type: 'int', default: 1 })
+  seatCount: number;
 
-  @ManyToOne(() => User)
+  @Column({ type: 'bigint', default: 0 })
+  totalPrice: number;
+
+  @Column({ type: 'varchar', default: BookingStatus.PENDING })
+  status: BookingStatus; // PENDING / CONFIRMED / CANCELLED
+
+  @Column({ type: 'timestamp', nullable: true })
+  paidAt: Date; // Waktu pembayaran
+
+  @Column({ type: 'varchar', nullable: true })
+  refundReason: string; // Alasan refund (jika dibatalkan oleh admin)
+
+  @Column({ type: 'timestamp', nullable: true })
+  refundedAt: Date; // Waktu refund
+
+  @ManyToOne(() => User, (user) => user.bookings)
   @JoinColumn({ name: 'userId' })
   user: User;
 
@@ -36,4 +60,10 @@ export class Booking {
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt: Date;
 }

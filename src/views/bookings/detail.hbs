@@ -109,10 +109,7 @@
     <!-- Route Info -->
     <div style="margin-bottom: 24px;">
         <h4 style="color: var(--text-muted); margin-bottom: 12px; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em;"><i class="fas fa-route"></i> Informasi Rute</h4>
-        <div style="display: flex; align-items: center; gap: 16px;">
-            <div style="text-align: center; flex: 1;">
-                <div style="font-size: 0.8125rem; color: var(--text-muted);">Dari</div>
-                <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">{{booking.schedule.originStation.code}}</div>
+        <div class="route-display" style="display: flex; align-items: center; gap: 16px;">
                 <div style="color: var(--text-primary); font-size: 0.875rem;">{{booking.schedule.originStation.name}}</div>
             </div>
             <div style="flex: 0 0 80px; display: flex; flex-direction: column; align-items: center;">
@@ -130,9 +127,7 @@
     <!-- Time Info -->
     <div style="margin-bottom: 24px;">
         <h4 style="color: var(--text-muted); margin-bottom: 12px; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em;"><i class="fas fa-clock"></i> Waktu Perjalanan</h4>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-            <div style="padding: 16px; background: var(--bg-elevated); border-radius: var(--radius-md); border-left: 3px solid var(--primary);">
-                <div style="font-size: 0.8125rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.03em;">Keberangkatan</div>
+        <div class="time-grid-responsive" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                 <div style="font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-top: 4px;">{{formatDate booking.schedule.departureTime}}</div>
             </div>
             <div style="padding: 16px; background: var(--bg-elevated); border-radius: var(--radius-md); border-left: 3px solid var(--success);">
@@ -147,7 +142,7 @@
     <div style="margin-bottom: 24px;">
         <h4 style="color: var(--text-muted); margin-bottom: 12px; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em;"><i class="fas fa-user"></i> Informasi Penumpang</h4>
         <div style="padding: 16px; background: var(--bg-elevated); border-radius: var(--radius-md);">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="passenger-grid-responsive" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                 <div>
                     <span style="color: var(--text-muted); font-size: 0.8125rem;">Nama:</span>
                     <span style="color: var(--text-primary); margin-left: 8px; font-weight: 500;">{{booking.user.name}}</span>

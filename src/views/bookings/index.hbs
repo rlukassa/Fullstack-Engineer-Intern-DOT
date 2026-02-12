@@ -4,7 +4,7 @@
 </div>
 
 {{#if (not (eq userRole "ADMIN"))}}
-<div style="padding: 14px 20px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-lg); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+<div class="balance-bar-responsive" style="padding: 14px 20px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-lg); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
     <div>
         <span style="color: var(--text-muted); font-size: 0.8125rem;">Saldo Anda:</span>
         <strong style="color: var(--success); font-size: 1.25rem; margin-left: 8px;">{{formatBalance balance}}</strong>

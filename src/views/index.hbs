@@ -102,7 +102,7 @@
 {{else}}
 <!-- ============ GUEST LANDING PAGE ============ -->
 <style>
-    .landing-wrapper { margin: -28px -32px; }
+    .landing-wrapper { margin: -28px -32px; overflow-x: hidden; }
 
     /* --- Hero Section --- */
     .hero-section {
@@ -438,12 +438,51 @@
         .landing-footer { flex-direction: column; gap: 8px; text-align: center; padding: 20px 32px; }
     }
     @media (max-width: 768px) {
+        .landing-wrapper { margin: -16px -14px; }
         .hero-section { padding: 32px 20px; }
         .hero-content h1 { font-size: 1.75rem; }
+        .hero-content p { font-size: 0.9375rem; }
         .hero-actions { flex-direction: column; align-items: stretch; }
+        .hero-actions .btn-hero { justify-content: center; }
         .carousel-container { aspect-ratio: 16/10; }
-        .clients-section, .features-section, .stats-section, .cta-section { padding: 40px 20px; }
+        .clients-section, .features-section, .stats-section, .cta-section { padding: 32px 20px; }
+        .clients-grid { gap: 24px; }
+        .section-title { font-size: 1.4rem; }
+        .section-subtitle { font-size: 0.8125rem; }
+        .feature-card { padding: 24px 20px; }
+        .stat-item h3 { font-size: 1.75rem; }
+        .cta-card { padding: 32px 20px; }
+        .cta-card h2 { font-size: 1.4rem; }
         .landing-footer { padding: 16px 20px; }
+        .landing-footer-links { flex-wrap: wrap; justify-content: center; gap: 12px; }
+    }
+    @media (max-width: 480px) {
+        .landing-wrapper { margin: -12px -10px; }
+        .hero-section { padding: 24px 16px; gap: 28px; }
+        .hero-content h1 { font-size: 1.5rem; }
+        .hero-content p { font-size: 0.8125rem; margin-bottom: 24px; }
+        .hero-actions .btn-hero { padding: 12px 24px; font-size: 0.8125rem; }
+        .clients-section { padding: 24px 16px; }
+        .clients-grid { gap: 16px; }
+        .client-logo { font-size: 0.875rem; }
+        .client-logo i { font-size: 1.125rem; }
+        .features-section, .stats-section, .cta-section { padding: 32px 16px; }
+        .feature-icon { width: 48px; height: 48px; font-size: 1.125rem; }
+        .section-title { font-size: 1.25rem; }
+        .stat-item h3 { font-size: 1.5rem; }
+        .cta-card { padding: 24px 16px; border-radius: 14px; }
+        .cta-card h2 { font-size: 1.25rem; }
+        .cta-card p { font-size: 0.8125rem; }
+        .landing-footer { padding: 14px 16px; }
+        .landing-footer p { font-size: 0.6875rem; }
+        .landing-footer-links a { font-size: 0.6875rem; }
+    }
+    @media (max-width: 360px) {
+        .landing-wrapper { margin: -10px -8px; }
+        .hero-section { padding: 20px 12px; }
+        .hero-content h1 { font-size: 1.3rem; }
+        .clients-section, .features-section, .stats-section, .cta-section { padding: 24px 12px; }
+        .stats-grid { gap: 20px; }
     }
 </style>
 

@@ -4,10 +4,10 @@
 </div>
 
 {{#if (not (eq userRole "ADMIN"))}}
-<div style="padding: 15px 20px; background: rgba(34, 197, 94, 0.1); border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+<div style="padding: 14px 20px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-lg); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
     <div>
-        <span style="color: #888;">Saldo Anda:</span>
-        <strong style="color: #22c55e; font-size: 1.3rem; margin-left: 10px;">{{formatBalance balance}}</strong>
+        <span style="color: var(--text-muted); font-size: 0.8125rem;">Saldo Anda:</span>
+        <strong style="color: var(--success); font-size: 1.25rem; margin-left: 8px;">{{formatBalance balance}}</strong>
     </div>
     <button onclick="openModal('topupModal')" class="btn btn-success btn-sm">
         <i class="fas fa-plus"></i> Top Up Saldo
@@ -41,32 +41,32 @@
                 {{#each bookings}}
                 <tr>
                     <td>
-                        <span style="font-weight: bold; color: #3b82f6; font-family: monospace;">{{this.bookingCode}}</span>
+                        <span style="font-weight: 600; color: var(--primary); font-family: 'SF Mono', 'Cascadia Code', monospace; font-size: 0.8125rem;">{{this.bookingCode}}</span>
                     </td>
                     <td>
                         <div style="display: flex; align-items: center; gap: 10px;">
-                            <div style="width: 40px; height: 40px; background: rgba(59, 130, 246, 0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                                <i class="fas fa-train" style="color: #3b82f6;"></i>
+                            <div style="width: 34px; height: 34px; background: var(--primary-light); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-train" style="color: var(--primary); font-size: 0.75rem;"></i>
                             </div>
                             <div>
-                                <strong>{{this.schedule.train.name}}</strong>
-                                <div style="font-size: 0.8rem; color: #888;">{{this.schedule.train.type}}</div>
+                                <strong style="color: var(--text-primary); font-size: 0.875rem;">{{this.schedule.train.name}}</strong>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">{{this.schedule.train.type}}</div>
                             </div>
                         </div>
                     </td>
                     <td>
-                        <div style="display: flex; align-items: center; gap: 8px;">
+                        <div style="display: flex; align-items: center; gap: 6px;">
                             <span class="badge badge-info">{{this.schedule.originStation.code}}</span>
-                            <i class="fas fa-arrow-right" style="color: #666;"></i>
+                            <i class="fas fa-arrow-right" style="color: var(--text-muted); font-size: 0.65rem;"></i>
                             <span class="badge badge-success">{{this.schedule.destinationStation.code}}</span>
                         </div>
                     </td>
-                    <td>{{formatDate this.schedule.departureTime}}</td>
+                    <td style="color: var(--text-secondary); font-size: 0.8125rem;">{{formatDate this.schedule.departureTime}}</td>
                     <td>
                         <span class="badge badge-primary">{{this.seatCount}} kursi</span>
                     </td>
                     <td>
-                        <strong style="color: #22c55e;">{{formatPrice this.totalPrice}}</strong>
+                        <strong style="color: var(--success);">{{formatPrice this.totalPrice}}</strong>
                     </td>
                     <td>
                         {{#if (eq this.status "CONFIRMED")}}
@@ -98,7 +98,7 @@
                             {{#if (eq this.status "PENDING")}}
                             {{#if (eq this.schedule.journeyStatus "BELUM_BERANGKAT")}}
                             <form action="/bookings/{{this.id}}/pay" method="POST" style="display: inline;">
-                                <button type="submit" class="btn-icon" style="background: rgba(34, 197, 94, 0.2); color: #22c55e;" title="Bayar Sekarang">
+                                <button type="submit" class="btn-icon" style="background: var(--success-light); color: var(--success);" title="Bayar Sekarang">
                                     <i class="fas fa-credit-card"></i>
                                 </button>
                             </form>
@@ -119,34 +119,34 @@
         <i class="fas fa-ticket-alt"></i>
         <h3>Belum Ada Pemesanan</h3>
         <p>Anda belum melakukan pemesanan apapun.</p>
-        <a href="/schedules" class="btn btn-primary" style="margin-top: 20px;">
+        <a href="/schedules" class="btn btn-primary" style="margin-top: 16px;">
             <i class="fas fa-calendar-alt"></i> Jelajahi Jadwal
         </a>
     </div>
     {{/if}}
 </div>
 
-<!-- Top Up Modal (Duplicate for this page) -->
+<!-- Top Up Modal -->
 {{#if (not (eq userRole "ADMIN"))}}
 <div class="modal-overlay" id="topupModal">
     <div class="modal">
         <div class="modal-header">
-            <h3 class="modal-title"><i class="fas fa-wallet" style="color: #22c55e;"></i> Top Up Saldo</h3>
+            <h3 class="modal-title"><i class="fas fa-wallet" style="color: var(--success);"></i> Top Up Saldo</h3>
             <button class="modal-close" onclick="closeModal('topupModal')">
                 <i class="fas fa-times"></i>
             </button>
         </div>
         <form action="/auth/topup" method="POST">
             <div class="modal-body">
-                <p style="margin-bottom: 20px; color: #888;">Saldo saat ini: <strong style="color: #22c55e;">{{formatBalance balance}}</strong></p>
+                <p style="margin-bottom: 16px; color: var(--text-muted); font-size: 0.875rem;">Saldo saat ini: <strong style="color: var(--success);">{{formatBalance balance}}</strong></p>
                 
                 <div class="form-group">
                     <label class="form-label">Jumlah Top Up (Rupiah)</label>
                     <input type="number" name="amount" class="form-control" placeholder="Masukkan jumlah" min="10000" max="10000000" step="10000" required>
-                    <small style="color: #888; margin-top: 5px; display: block;">Min: Rp 10.000 | Max: Rp 10.000.000</small>
+                    <small style="color: var(--text-muted); margin-top: 4px; display: block; font-size: 0.75rem;">Min: Rp 10.000 | Max: Rp 10.000.000</small>
                 </div>
                 
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;">
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px;">
                     <button type="button" class="btn btn-secondary btn-sm topup-preset" data-amount="50000">Rp 50.000</button>
                     <button type="button" class="btn btn-secondary btn-sm topup-preset" data-amount="100000">Rp 100.000</button>
                     <button type="button" class="btn btn-secondary btn-sm topup-preset" data-amount="200000">Rp 200.000</button>
@@ -170,18 +170,18 @@
 <div class="modal-overlay" id="cancelModal">
     <div class="modal">
         <div class="modal-header">
-            <h3 class="modal-title"><i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i> Batalkan Pemesanan</h3>
+            <h3 class="modal-title"><i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i> Batalkan Pemesanan</h3>
             <button class="modal-close" onclick="closeModal('cancelModal')">
                 <i class="fas fa-times"></i>
             </button>
         </div>
         <div class="modal-body">
             <p>Apakah Anda yakin ingin membatalkan pemesanan ini?</p>
-            <p style="color: #888; font-size: 0.9rem; margin-top: 10px;">Jika sudah dibayar, saldo akan dikembalikan.</p>
+            <p style="color: var(--text-muted); font-size: 0.8125rem; margin-top: 8px;">Jika sudah dibayar, saldo akan dikembalikan.</p>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-secondary" onclick="closeModal('cancelModal')">Pertahankan Pemesanan</button>
-            <button class="btn btn-danger" id="confirmCancelBtn">Batalkan Pemesanan</button>
+            <button class="btn btn-secondary" onclick="closeModal('cancelModal')">Pertahankan</button>
+            <button class="btn btn-danger" id="confirmCancelBtn"><i class="fas fa-times"></i> Batalkan Pemesanan</button>
         </div>
     </div>
 </div>
@@ -197,11 +197,8 @@
     document.getElementById('confirmCancelBtn').addEventListener('click', async function() {
         if (bookingToCancel) {
             try {
-                const response = await fetch(`/bookings/${bookingToCancel}`, {
-                    method: 'DELETE',
-                });
+                const response = await fetch('/bookings/' + bookingToCancel, { method: 'DELETE' });
                 const result = await response.json();
-                
                 if (result.success) {
                     let message = 'Pemesanan berhasil dibatalkan';
                     if (result.refundAmount && result.refundAmount > 0) {
@@ -219,7 +216,6 @@
         }
     });
 
-    // Top Up preset buttons
     document.querySelectorAll('.topup-preset').forEach(btn => {
         btn.addEventListener('click', function() {
             const amount = this.getAttribute('data-amount');

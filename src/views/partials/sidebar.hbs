@@ -1,189 +1,186 @@
-<!-- Sidebar -->
-<aside class="sidebar slide-in-left">
+<style>
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: var(--sidebar-width);
+        height: 100vh;
+        background: var(--bg-surface);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        z-index: 200;
+        transition: transform var(--transition-slow);
+    }
+
+    .sidebar-header {
+        padding: 18px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .sidebar-header .logo-icon {
+        width: 36px; height: 36px;
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        color: white; font-size: 1rem;
+        flex-shrink: 0;
+    }
+    .sidebar-header .logo-text {
+        font-size: 1.0625rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        letter-spacing: -0.02em;
+    }
+    .sidebar-header .logo-sub {
+        font-size: 0.6875rem;
+        color: var(--text-muted);
+        margin-top: -2px;
+    }
+
+    .sidebar-nav {
+        flex: 1;
+        overflow-y: auto;
+        padding: 12px 12px;
+    }
+
+    .nav-section { margin-bottom: 20px; }
+    .nav-section-title {
+        padding: 0 10px;
+        margin-bottom: 6px;
+        font-size: 0.625rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-faint);
+    }
+
+    .sidebar-link {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 12px;
+        border-radius: var(--radius-md);
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-size: 0.8125rem;
+        font-weight: 500;
+        transition: all var(--transition-fast);
+        margin-bottom: 2px;
+    }
+    .sidebar-link:hover {
+        background: var(--bg-hover);
+        color: var(--text-primary);
+    }
+    .sidebar-link.active {
+        background: var(--primary-light);
+        color: var(--primary);
+        font-weight: 600;
+    }
+    .sidebar-link i {
+        width: 18px;
+        text-align: center;
+        font-size: 0.875rem;
+        flex-shrink: 0;
+    }
+    .sidebar-link.active i { color: var(--primary); }
+
+    .sidebar-footer {
+        padding: 16px;
+        border-top: 1px solid var(--border);
+    }
+    .sidebar-user {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        background: var(--bg-elevated);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border);
+    }
+    .sidebar-avatar {
+        width: 34px; height: 34px;
+        background: linear-gradient(135deg, #3b82f6, #6366f1);
+        border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        color: white; font-size: 0.875rem; font-weight: 700;
+        flex-shrink: 0;
+    }
+    .sidebar-username {
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .sidebar-role {
+        font-size: 0.625rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--primary);
+    }
+
+    @media (max-width: 768px) {
+        .sidebar { transform: translateX(-100%); }
+        .sidebar.open { transform: translateX(0); }
+    }
+</style>
+
+<aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
-        <div class="sidebar-logo">
-            <i class="fas fa-train"></i>
-            <span>Sidebar</span>
+        <div class="logo-icon"><i class="fas fa-train"></i></div>
+        <div>
+            <div class="logo-text">SobatKereta</div>
+            <div class="logo-sub">Sistem Pemesanan Tiket</div>
         </div>
     </div>
-    
+
     <nav class="sidebar-nav">
         <div class="nav-section">
-            <span class="nav-section-title">Menu Utama</span>
-            <a href="/" class="sidebar-link {{#if activePage.home}}active{{/if}}">
-                <i class="fas fa-home"></i>
-                <span>Dashboard</span>
+            <div class="nav-section-title">Overview</div>
+            <a href="/" class="sidebar-link {{#if (eq currentPage 'dashboard')}}active{{/if}}">
+                <i class="fas fa-th-large"></i> Dashboard
             </a>
         </div>
-        
+
         <div class="nav-section">
-            <span class="nav-section-title">Manajemen</span>
-            <a href="/trains" class="sidebar-link {{#if activePage.trains}}active{{/if}}">
-                <i class="fas fa-train"></i>
-                <span>Kereta</span>
+            <div class="nav-section-title">Manajemen</div>
+            <a href="/trains" class="sidebar-link {{#if (eq currentPage 'trains')}}active{{/if}}">
+                <i class="fas fa-train"></i> Kereta
             </a>
-            <a href="/schedules" class="sidebar-link {{#if activePage.schedules}}active{{/if}}">
-                <i class="fas fa-calendar-alt"></i>
-                <span>Jadwal</span>
+            <a href="/schedules" class="sidebar-link {{#if (eq currentPage 'schedules')}}active{{/if}}">
+                <i class="fas fa-calendar-alt"></i> Jadwal
             </a>
-            <a href="/stations" class="sidebar-link {{#if activePage.stations}}active{{/if}}">
-                <i class="fas fa-map-marker-alt"></i>
-                <span>Stasiun</span>
+            <a href="/stations" class="sidebar-link {{#if (eq currentPage 'stations')}}active{{/if}}">
+                <i class="fas fa-map-marker-alt"></i> Stasiun
             </a>
         </div>
-        
-        {{#if (eq userRole "ADMIN")}}
+
         <div class="nav-section">
-            <span class="nav-section-title">Pemesanan</span>
-            <a href="/bookings" class="sidebar-link {{#if activePage.bookings}}active{{/if}}">
-                <i class="fas fa-ticket-alt"></i>
-                <span>Semua Pemesanan</span>
+            <div class="nav-section-title">Transaksi</div>
+            <a href="/bookings" class="sidebar-link {{#if (eq currentPage 'bookings')}}active{{/if}}">
+                <i class="fas fa-ticket-alt"></i> Pemesanan
             </a>
         </div>
-        {{/if}}
     </nav>
-    
+
     <div class="sidebar-footer">
-        <div class="user-profile">
-            <div class="avatar">
-                <i class="fas fa-user"></i>
+        <div class="sidebar-user">
+            <div class="sidebar-avatar">
+                {{#if username}}
+                    {{ username.[0] }}
+                {{else}}
+                    U
+                {{/if}}
             </div>
-            <div class="user-details">
-                <span class="user-name">{{username}}</span>
-                <span class="user-role">{{userRole}}</span>
+            <div>
+                <div class="sidebar-username">{{username}}</div>
+                <div class="sidebar-role">{{userRole}}</div>
             </div>
         </div>
     </div>
 </aside>
-
-<style>
-    .sidebar {
-        position: fixed;
-        left: 0;
-        top: 0;
-        width: 260px;
-        height: 100vh;
-        background: linear-gradient(180deg, #111111 0%, #1a1a1a 100%);
-        border-right: 1px solid #2a2a2a;
-        display: flex;
-        flex-direction: column;
-        z-index: 1000;
-        overflow-y: auto;
-    }
-    
-    .sidebar-header {
-        padding: 25px 20px;
-        border-bottom: 1px solid #2a2a2a;
-    }
-    
-    .sidebar-logo {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        color: #fff;
-        font-size: 1.2rem;
-        font-weight: 700;
-    }
-    
-    .sidebar-logo i {
-        color: #fef08a;
-        font-size: 1.5rem;
-    }
-    
-    .sidebar-nav {
-        flex: 1;
-        padding: 20px 0;
-    }
-    
-    .nav-section {
-        margin-bottom: 25px;
-    }
-    
-    .nav-section-title {
-        display: block;
-        padding: 0 20px;
-        margin-bottom: 10px;
-        font-size: 0.7rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        color: #666;
-    }
-    
-    .sidebar-link {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 12px 20px;
-        color: #888;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        border-left: 3px solid transparent;
-    }
-    
-    .sidebar-link:hover {
-        background: rgba(254, 240, 138, 0.05);
-        color: #fef08a;
-        border-left-color: #fef08a;
-    }
-    
-    .sidebar-link.active {
-        background: rgba(254, 240, 138, 0.1);
-        color: #fef08a;
-        border-left-color: #fef08a;
-    }
-    
-    .sidebar-link i {
-        width: 20px;
-        text-align: center;
-    }
-    
-    .sidebar-footer {
-        padding: 20px;
-        border-top: 1px solid #2a2a2a;
-    }
-    
-    .user-profile {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-    
-    .avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 10px;
-        background: linear-gradient(135deg, #fef08a 0%, #fde047 100%);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #000;
-    }
-    
-    .user-details {
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .user-name {
-        color: #fff;
-        font-weight: 600;
-        font-size: 0.9rem;
-    }
-    
-    .user-role {
-        color: #666;
-        font-size: 0.75rem;
-        text-transform: uppercase;
-    }
-    
-    @media (max-width: 768px) {
-        .sidebar {
-            transform: translateX(-100%);
-        }
-        
-        .sidebar.open {
-            transform: translateX(0);
-        }
-    }
-</style>

@@ -1,530 +1,411 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daftar - SobatKereta</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
-            font-family: 'Poppins', sans-serif;
-            background: #0a0a0a;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: #f0f4f8;
             min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Top Navbar */
+        .auth-navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 40px;
+            background: #fff;
+            border-bottom: 1px solid #e2e6eb;
+        }
+        .auth-navbar-brand {
+            font-size: 1.0625rem;
+            font-weight: 700;
+            color: #1a1d23;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: -0.02em;
+        }
+        .auth-navbar-brand .icon {
+            width: 32px; height: 32px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 0.875rem;
+        }
+        .auth-navbar-links { display: flex; gap: 6px; align-items: center; }
+        .auth-navbar-links a {
+            color: #718096; text-decoration: none; padding: 7px 14px;
+            border-radius: 8px; font-size: 0.8125rem; font-weight: 500;
+            transition: all 150ms ease;
+        }
+        .auth-navbar-links a:hover { color: #1a1d23; background: #f0f4f8; }
+        .auth-navbar-links .btn-primary-link {
+            background: #3b82f6; color: #fff; border: none; padding: 8px 18px;
+            border-radius: 8px; font-size: 0.8125rem; font-weight: 600;
+            cursor: pointer; text-decoration: none; transition: all 150ms ease;
+        }
+        .auth-navbar-links .btn-primary-link:hover { background: #2563eb; }
+
+        /* Split Layout */
+        .auth-split { display: flex; min-height: calc(100vh - 61px); }
+
+        /* Left side - Form */
+        .auth-form-side {
+            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
-            position: relative;
-            overflow-x: hidden;
+            padding: 40px;
+            background: #fff;
         }
-        
-        /* Animated Background */
-        .bg-animation {
-            position: fixed;
-            top: 0;
-            left: 0;
+        .auth-form-wrapper {
             width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: 0;
+            max-width: 420px;
+            animation: fadeInUp 0.5s ease-out;
         }
-        
-        .bg-animation span {
-            position: absolute;
-            display: block;
-            width: 20px;
-            height: 20px;
-            background: rgba(254, 240, 138, 0.1);
-            animation: move 25s infinite;
-            bottom: -150px;
-            border-radius: 50%;
-        }
-        
-        .bg-animation span:nth-child(1) { left: 25%; width: 80px; height: 80px; animation-delay: 0s; }
-        .bg-animation span:nth-child(2) { left: 10%; width: 20px; height: 20px; animation-delay: 2s; animation-duration: 12s; }
-        .bg-animation span:nth-child(3) { left: 70%; width: 20px; height: 20px; animation-delay: 4s; }
-        .bg-animation span:nth-child(4) { left: 40%; width: 60px; height: 60px; animation-delay: 0s; animation-duration: 18s; }
-        .bg-animation span:nth-child(5) { left: 65%; width: 20px; height: 20px; animation-delay: 0s; }
-        .bg-animation span:nth-child(6) { left: 75%; width: 110px; height: 110px; animation-delay: 3s; }
-        .bg-animation span:nth-child(7) { left: 35%; width: 150px; height: 150px; animation-delay: 7s; }
-        .bg-animation span:nth-child(8) { left: 50%; width: 25px; height: 25px; animation-delay: 15s; animation-duration: 45s; }
-        .bg-animation span:nth-child(9) { left: 20%; width: 15px; height: 15px; animation-delay: 2s; animation-duration: 35s; }
-        .bg-animation span:nth-child(10) { left: 85%; width: 150px; height: 150px; animation-delay: 0s; animation-duration: 11s; }
-        
-        @keyframes move {
-            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(-1000px) rotate(720deg); opacity: 0; }
-        }
-        
-        /* Register Container */
-        .register-container {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            max-width: 500px;
-            animation: fadeInUp 0.6s ease-out;
-        }
-        
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
+            from { opacity: 0; transform: translateY(16px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        
-        .register-box {
-            background: linear-gradient(145deg, #111111 0%, #1a1a1a 100%);
-            border-radius: 24px;
-            padding: 40px;
-            border: 1px solid #2a2a2a;
-            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
-        }
-        
-        .register-header {
-            text-align: center;
-            margin-bottom: 35px;
-        }
-        
-        .register-logo {
-            width: 70px;
-            height: 70px;
-            background: linear-gradient(135deg, #fef08a 0%, #fde047 100%);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(254, 240, 138, 0.4); }
-            50% { transform: scale(1.05); box-shadow: 0 0 30px rgba(254, 240, 138, 0.3); }
-        }
-        
-        .register-logo i {
+        .auth-form-wrapper h1 {
             font-size: 2rem;
-            color: #000;
-        }
-        
-        .register-header h1 {
-            color: #fff;
-            font-size: 1.8rem;
-            font-weight: 700;
+            font-weight: 800;
+            color: #3b82f6;
             margin-bottom: 8px;
+            letter-spacing: -0.03em;
         }
-        
-        .register-header p {
-            color: #666;
-            font-size: 0.95rem;
+        .auth-form-wrapper .subtitle {
+            color: #718096;
+            font-size: 0.9375rem;
+            margin-bottom: 32px;
         }
-        
+
         /* Form */
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
+        .form-group { margin-bottom: 18px; }
         .form-label {
-            display: block;
-            margin-bottom: 8px;
-            color: #888;
-            font-size: 0.9rem;
-            font-weight: 500;
+            display: block; margin-bottom: 6px;
+            color: #4a5568; font-size: 0.8125rem; font-weight: 600;
         }
-        
-        .form-label .required {
-            color: #ef4444;
-        }
-        
-        .input-wrapper {
-            position: relative;
-        }
-        
+        .input-wrapper { position: relative; }
         .input-wrapper i.input-icon {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #555;
-            transition: color 0.3s ease;
+            position: absolute; left: 14px; top: 50%;
+            transform: translateY(-50%); color: #a0aec0;
+            font-size: 0.8125rem; transition: color 150ms ease;
         }
-        
         .form-control {
-            width: 100%;
-            padding: 16px 16px 16px 48px;
-            border: 2px solid #2a2a2a;
-            border-radius: 12px;
-            background: #0a0a0a;
-            color: #fff;
-            font-family: 'Poppins', sans-serif;
-            font-size: 1rem;
-            transition: all 0.3s ease;
+            width: 100%; padding: 12px 14px 12px 42px;
+            border: 1.5px solid #e2e6eb; border-radius: 10px;
+            background: #fff; color: #1a1d23;
+            font-family: inherit; font-size: 0.875rem;
+            transition: all 150ms ease;
         }
-        
         .form-control:focus {
-            outline: none;
-            border-color: #fef08a;
-            box-shadow: 0 0 20px rgba(254, 240, 138, 0.15);
+            outline: none; border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
-        
-        .form-control:focus + i.input-icon,
-        .form-control:focus ~ i.input-icon {
-            color: #fef08a;
-        }
-        
-        .form-control::placeholder {
-            color: #444;
-        }
-        
-        /* Password Toggle */
+        .form-control:focus ~ i.input-icon { color: #3b82f6; }
+        .form-control::placeholder { color: #c0c7d0; }
         .password-toggle {
-            position: absolute;
-            right: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: #555;
-            cursor: pointer;
-            padding: 5px;
-            transition: color 0.3s ease;
+            position: absolute; right: 14px; top: 50%;
+            transform: translateY(-50%); background: none; border: none;
+            color: #a0aec0; cursor: pointer; padding: 4px;
+            font-size: 0.8125rem; transition: color 150ms ease;
         }
-        
-        .password-toggle:hover {
-            color: #fef08a;
-        }
-        
-        /* Password Strength Indicator */
-        .password-strength {
-            margin-top: 10px;
-            display: flex;
-            gap: 5px;
-        }
-        
+        .password-toggle:hover { color: #4a5568; }
+
+        /* Password Strength */
+        .password-strength { margin-top: 8px; }
+        .strength-bars { display: flex; gap: 4px; margin-bottom: 4px; }
         .strength-bar {
-            flex: 1;
-            height: 4px;
-            background: #2a2a2a;
-            border-radius: 2px;
-            transition: background 0.3s ease;
+            flex: 1; height: 4px; border-radius: 2px; background: #e2e6eb;
+            transition: background 200ms ease;
         }
-        
         .strength-bar.weak { background: #ef4444; }
-        .strength-bar.medium { background: #eab308; }
+        .strength-bar.medium { background: #f59e0b; }
         .strength-bar.strong { background: #22c55e; }
-        
-        .strength-text {
-            font-size: 0.8rem;
-            margin-top: 5px;
-            color: #666;
+        .strength-label { font-size: 0.6875rem; color: #a0aec0; font-weight: 500; }
+
+        /* Submit button */
+        .btn-register-submit {
+            width: 100%; padding: 13px; border: none; border-radius: 10px;
+            background: #3b82f6; color: white;
+            font-family: inherit; font-size: 0.9375rem; font-weight: 600;
+            cursor: pointer; transition: all 150ms ease;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            margin-top: 24px;
         }
-        
-        /* Submit Button */
-        .btn-register {
-            width: 100%;
-            padding: 16px;
-            border: none;
-            border-radius: 12px;
-            background: #ffffff;
-            color: #000;
-            font-family: 'Poppins', sans-serif;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
+        .btn-register-submit:hover {
+            background: #2563eb;
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+            transform: translateY(-1px);
+        }
+        .btn-register-submit:active { transform: translateY(0); }
+
+        .auth-footer {
+            text-align: center; margin-top: 28px;
+            padding-top: 20px; border-top: 1px solid #e2e6eb;
+        }
+        .auth-footer p { color: #718096; font-size: 0.8125rem; }
+        .auth-footer a { color: #3b82f6; text-decoration: none; font-weight: 600; }
+        .auth-footer a:hover { text-decoration: underline; }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.06); border: 1px solid rgba(239, 68, 68, 0.15);
+            color: #dc2626; padding: 10px 14px; border-radius: 10px;
+            font-size: 0.8125rem; margin-bottom: 20px;
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        /* Right side - Illustration */
+        .auth-illustration-side {
+            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            background: #f0f4f8;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
         }
-        
-        .btn-register:hover {
-            background: #fef08a;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(254, 240, 138, 0.3);
-        }
-        
-        .btn-register:active {
-            transform: translateY(0);
-        }
-        
-        /* Links */
-        .register-footer {
+
+        .illustration-container {
+            position: relative;
+            width: 100%;
+            max-width: 480px;
             text-align: center;
-            margin-top: 25px;
-            padding-top: 25px;
-            border-top: 1px solid #2a2a2a;
+            z-index: 1;
         }
-        
-        .register-footer p {
-            color: #666;
-            font-size: 0.9rem;
+
+        .blob {
+            position: absolute;
+            width: 360px; height: 360px;
+            background: linear-gradient(135deg, #6366f1, #3b82f6);
+            border-radius: 50%;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.9;
         }
-        
-        .register-footer a {
-            color: #fef08a;
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s ease;
+
+        .form-card-mockup {
+            position: relative; z-index: 2;
+            width: 200px; margin: 0 auto;
+            background: #fff; border-radius: 20px;
+            padding: 24px 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
         }
-        
-        .register-footer a:hover {
-            color: #fde047;
+        .form-card-mockup .mockup-title {
+            width: 60%; height: 10px;
+            background: #e2e6eb; border-radius: 5px;
+            margin: 0 auto 16px;
         }
-        
-        .back-home {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: #666;
-            text-decoration: none;
-            font-size: 0.9rem;
-            margin-top: 15px;
-            transition: color 0.3s ease;
+        .form-card-mockup .mockup-field {
+            height: 32px; background: #f0f4f8; border-radius: 8px;
+            margin-bottom: 10px; display: flex; align-items: center;
+            padding: 0 10px;
         }
-        
-        .back-home:hover {
-            color: #fef08a;
+        .form-card-mockup .mockup-field .dot {
+            width: 8px; height: 8px;
+            background: #a0aec0; border-radius: 50%;
         }
-        
-        /* Error message */
-        .error-message {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            color: #ef4444;
-            padding: 12px 16px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            animation: shake 0.5s ease-out;
+        .form-card-mockup .mockup-field .line {
+            height: 6px; background: #e2e6eb;
+            border-radius: 3px; flex: 1; margin-left: 8px;
         }
-        
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
+        .form-card-mockup .mockup-btn {
+            height: 32px; background: #3b82f6;
+            border-radius: 8px; margin-top: 6px;
+        }   
+
+        .check-circle {
+            position: absolute; top: -12px; right: -12px;
+            width: 40px; height: 40px;
+            background: #22c55e; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            z-index: 3;
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
         }
-        
-        /* Role Badge */
-        .role-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(34, 197, 94, 0.1);
-            border: 1px solid rgba(34, 197, 94, 0.3);
-            color: #22c55e;
-            padding: 10px 16px;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            margin-bottom: 20px;
+        .check-circle i { color: #fff; font-size: 1rem; }
+
+        /* Floating */
+        .float-icon {
+            position: absolute;
+            background: #fff;
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            z-index: 3;
+            animation: floatBounce 3s ease-in-out infinite;
         }
-        
-        .role-badge i {
-            font-size: 1rem;
+        .float-icon i { font-size: 1.125rem; }
+        .float-icon.top-left { top: 5%; left: 10%; animation-delay: 0s; }
+        .float-icon.top-right { top: 8%; right: 10%; animation-delay: 0.5s; }
+        .float-icon.bottom-left { bottom: 12%; left: 8%; animation-delay: 1s; }
+        .float-icon.bottom-right { bottom: 6%; right: 8%; animation-delay: 1.5s; }
+        @keyframes floatBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
-        
-        /* Form Row */
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
+
+        @media (max-width: 900px) {
+            .auth-illustration-side { display: none; }
+            .auth-form-side { min-height: calc(100vh - 61px); }
         }
-        
-        @media (max-width: 500px) {
-            .form-row {
-                grid-template-columns: 1fr;
-            }
+        @media (max-width: 600px) {
+            .auth-navbar { padding: 12px 20px; }
+            .auth-form-side { padding: 24px 20px; }
         }
     </style>
 </head>
 <body>
-    <!-- Animated Background -->
-    <div class="bg-animation">
-        <span></span><span></span><span></span><span></span><span></span>
-        <span></span><span></span><span></span><span></span><span></span>
-    </div>
-    
-    <div class="register-container">
-        <div class="register-box">
-            <div class="register-header">
-                <div class="register-logo">
-                    <i class="fas fa-user-plus"></i>
+    <!-- Navbar -->
+    <nav class="auth-navbar">
+        <a href="/" class="auth-navbar-brand">
+            <div class="icon"><i class="fas fa-train"></i></div>
+            SobatKereta
+        </a>
+        <div class="auth-navbar-links">
+            <a href="/">Home</a>
+            <a href="/auth/login" class="btn-primary-link"><i class="fas fa-sign-in-alt"></i> Masuk</a>
+        </div>
+    </nav>
+
+    <div class="auth-split">
+        <!-- Left: Form -->
+        <div class="auth-form-side">
+            <div class="auth-form-wrapper">
+                <h1>DAFTAR</h1>
+                <p class="subtitle">Buat akun SobatKereta baru</p>
+
+                {{#if error}}
+                <div class="error-message">
+                    <i class="fas fa-circle-exclamation"></i> {{error}}
                 </div>
-                <h1>Buat Akun</h1>
-                <p>Bergabunglah dengan kami dan mulai pesan tiket kereta Anda</p>
-            </div>
-            
-            {{#if error}}
-            <div class="error-message">
-                <i class="fas fa-exclamation-circle"></i>
-                {{error}}
-            </div>
-            {{/if}}
-            
-            <div class="role-badge">
-                <i class="fas fa-user-check"></i>
-                Anda akan didaftarkan sebagai <strong>Customer</strong>
-            </div>
-            
-            <form action="/auth/register" method="POST" id="registerForm">
-                <div class="form-group">
-                    <label class="form-label">Username <span class="required">*</span></label>
-                    <div class="input-wrapper">
-                        <input 
-                            type="text" 
-                            class="form-control" 
-                            name="username" 
-                            placeholder="Masukkan nama pengguna Anda"
-                            required
-                            minlength="3"
-                            maxlength="50"
-                            autocomplete="username"
-                        >
-                        <i class="fas fa-user input-icon"></i>
+                {{/if}}
+
+                <form action="/auth/register" method="POST">
+                    <div class="form-group">
+                        <label class="form-label">Username</label>
+                        <div class="input-wrapper">
+                            <input type="text" name="username" class="form-control" placeholder="Masukkan username" required>
+                            <i class="fas fa-user input-icon"></i>
+                        </div>
                     </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <div class="input-wrapper">
+                            <input type="email" name="email" class="form-control" placeholder="nama@email.com" required>
+                            <i class="fas fa-envelope input-icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <div class="input-wrapper">
+                            <input type="password" name="password" id="passwordField" class="form-control" placeholder="Minimal 6 karakter" required oninput="checkPasswordStrength(this.value)">
+                            <i class="fas fa-lock input-icon"></i>
+                            <button type="button" class="password-toggle" onclick="togglePassword('passwordField', 'toggleIcon1')">
+                                <i class="fas fa-eye" id="toggleIcon1"></i>
+                            </button>
+                        </div>
+                        <div class="password-strength">
+                            <div class="strength-bars">
+                                <div class="strength-bar" id="bar1"></div>
+                                <div class="strength-bar" id="bar2"></div>
+                                <div class="strength-bar" id="bar3"></div>
+                                <div class="strength-bar" id="bar4"></div>
+                            </div>
+                            <span class="strength-label" id="strengthLabel"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Konfirmasi Password</label>
+                        <div class="input-wrapper">
+                            <input type="password" name="confirmPassword" id="confirmField" class="form-control" placeholder="Ulangi password" required>
+                            <i class="fas fa-lock input-icon"></i>
+                            <button type="button" class="password-toggle" onclick="togglePassword('confirmField', 'toggleIcon2')">
+                                <i class="fas fa-eye" id="toggleIcon2"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-register-submit">
+                        BUAT AKUN <i class="fas fa-arrow-right"></i>
+                    </button>
+                </form>
+
+                <div class="auth-footer">
+                    <p>Sudah punya akun? <a href="/auth/login">Masuk di sini</a></p>
                 </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Alamat Email <span class="required">*</span></label>
-                    <div class="input-wrapper">
-                        <input 
-                            type="email" 
-                            class="form-control" 
-                            name="email" 
-                            placeholder="Masukkan alamat email Anda"
-                            required
-                            autocomplete="email"
-                        >
-                        <i class="fas fa-envelope input-icon"></i>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Password <span class="required">*</span></label>
-                    <div class="input-wrapper">
-                        <input 
-                            type="password" 
-                            class="form-control" 
-                            name="password" 
-                            id="password"
-                            placeholder="Buat kata sandi"
-                            required
-                            minlength="4"
-                            autocomplete="new-password"
-                            oninput="checkPasswordStrength(this.value)"
-                        >
-                        <i class="fas fa-lock input-icon"></i>
-                        <button type="button" class="password-toggle" onclick="togglePassword('password', 'toggleIcon1')">
-                            <i class="fas fa-eye" id="toggleIcon1"></i>
-                        </button>
-                    </div>
-                    <div class="password-strength">
-                        <div class="strength-bar" id="bar1"></div>
-                        <div class="strength-bar" id="bar2"></div>
-                        <div class="strength-bar" id="bar3"></div>
-                        <div class="strength-bar" id="bar4"></div>
-                    </div>
-                    <div class="strength-text" id="strengthText"></div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Konfirmasi Kata Sandi <span class="required">*</span></label>
-                    <div class="input-wrapper">
-                        <input 
-                            type="password" 
-                            class="form-control" 
-                            name="confirmPassword" 
-                            id="confirmPassword"
-                            placeholder="Konfirmasi kata sandi Anda"
-                            required
-                            autocomplete="new-password"
-                        >
-                        <i class="fas fa-lock input-icon"></i>
-                        <button type="button" class="password-toggle" onclick="togglePassword('confirmPassword', 'toggleIcon2')">
-                            <i class="fas fa-eye" id="toggleIcon2"></i>
-                        </button>
-                    </div>
-                </div>
-                
-                <button type="submit" class="btn-register">
-                    <i class="fas fa-user-plus"></i> Buat Akun
-                </button>
-            </form>
-            
-            <div class="register-footer">
-                <p>Sudah punya akun? <a href="/auth/login">Masuk</a></p>
-                <a href="/" class="back-home">
-                    <i class="fas fa-arrow-left"></i> Kembali ke Beranda
-                </a>
             </div>
         </div>
+
+        <!-- Right: Illustration -->
+        <div class="auth-illustration-side">
+            <div class="illustration-container">
+                <div class="blob"></div>
+
+                <div class="form-card-mockup">
+                    <div class="check-circle"><i class="fas fa-check"></i></div>
+                    <div class="mockup-title"></div>
+                    <div class="mockup-field"><span class="dot"></span><span class="line"></span></div>
+                    <div class="mockup-field"><span class="dot"></span><span class="line"></span></div>
+                    <div class="mockup-field"><span class="dot"></span><span class="line"></span></div>
+                    <div class="mockup-btn"></div>
+                </div>
+            </div>
+
+            <div class="float-icon top-left"><i class="fas fa-train" style="color: #3b82f6;"></i></div>
+            <div class="float-icon top-right"><i class="fas fa-user-plus" style="color: #22c55e;"></i></div>
+            <div class="float-icon bottom-left"><i class="fas fa-ticket-alt" style="color: #f59e0b;"></i></div>
+            <div class="float-icon bottom-right"><i class="fas fa-map-marker-alt" style="color: #ef4444;"></i></div>
+        </div>
     </div>
-    
+
     <script>
-        function togglePassword(inputId, iconId) {
-            const passwordInput = document.getElementById(inputId);
-            const toggleIcon = document.getElementById(iconId);
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                toggleIcon.classList.remove('fa-eye');
-                toggleIcon.classList.add('fa-eye-slash');
+        function togglePassword(fieldId, iconId) {
+            var field = document.getElementById(fieldId);
+            var icon = document.getElementById(iconId);
+            if (field.type === 'password') {
+                field.type = 'text';
+                icon.className = 'fas fa-eye-slash';
             } else {
-                passwordInput.type = 'password';
-                toggleIcon.classList.remove('fa-eye-slash');
-                toggleIcon.classList.add('fa-eye');
+                field.type = 'password';
+                icon.className = 'fas fa-eye';
             }
         }
-        
         function checkPasswordStrength(password) {
-            const bars = [
-                document.getElementById('bar1'),
-                document.getElementById('bar2'),
-                document.getElementById('bar3'),
-                document.getElementById('bar4')
-            ];
-            const strengthText = document.getElementById('strengthText');
-            
-            // Reset bars
-            bars.forEach(bar => bar.className = 'strength-bar');
-            
-            let strength = 0;
-            
-            if (password.length >= 4) strength++;
-            if (password.length >= 8) strength++;
-            if (/[A-Z]/.test(password) && /[a-z]/.test(password)) strength++;
-            if (/[0-9]/.test(password) || /[^A-Za-z0-9]/.test(password)) strength++;
-            
-            const strengthLevels = ['', 'Lemah', 'Cukup', 'Baik', 'Kuat'];
-            const strengthColors = ['', 'weak', 'weak', 'medium', 'strong'];
-            
-            for (let i = 0; i < strength; i++) {
-                bars[i].classList.add(strengthColors[strength]);
+            var bars = [document.getElementById('bar1'), document.getElementById('bar2'),
+                        document.getElementById('bar3'), document.getElementById('bar4')];
+            var label = document.getElementById('strengthLabel');
+            bars.forEach(function(b) { b.className = 'strength-bar'; });
+            if (!password) { label.textContent = ''; return; }
+            var score = 0;
+            if (password.length >= 6) score++;
+            if (password.length >= 8) score++;
+            if (/[A-Z]/.test(password) && /[a-z]/.test(password)) score++;
+            if (/[0-9]/.test(password)) score++;
+            if (/[^A-Za-z0-9]/.test(password)) score++;
+            var level = score <= 1 ? 'weak' : score <= 3 ? 'medium' : 'strong';
+            var labels = { weak: 'Lemah', medium: 'Cukup', strong: 'Kuat' };
+            var counts = { weak: 1, medium: 2, strong: 4 };
+            for (var i = 0; i < counts[level]; i++) {
+                if (bars[i]) bars[i].classList.add(level);
             }
-            
-            strengthText.textContent = strength > 0 ? `Kekuatan kata sandi: ${strengthLevels[strength]}` : '';
-            strengthText.style.color = strength <= 2 ? '#ef4444' : strength === 3 ? '#eab308' : '#22c55e';
+            label.textContent = labels[level];
+            label.style.color = level === 'weak' ? '#ef4444' : level === 'medium' ? '#f59e0b' : '#22c55e';
         }
-        
-        // Form validation
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            
-            if (password !== confirmPassword) {
-                e.preventDefault();
-                alert('Kata sandi tidak cocok!');
-            }
-        });
     </script>
 </body>
 </html>

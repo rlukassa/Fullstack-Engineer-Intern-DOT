@@ -4,12 +4,12 @@
 </div>
 
 {{#if (eq userRole "ADMIN")}}
-<div class="card" style="margin-bottom: 30px;">
+<div class="card" style="margin-bottom: 24px;">
     <div class="card-header">
         <h3 class="card-title"><i class="fas fa-plus-circle"></i> Tambah Kereta Baru</h3>
     </div>
     <form action="/trains" method="POST">
-        <div style="display: grid; grid-template-columns: 1fr 1fr 150px auto; gap: 15px; align-items: end;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr 150px auto; gap: 12px; align-items: end;">
             <div class="form-group" style="margin: 0;">
                 <label class="form-label">Nama Kereta</label>
                 <input type="text" name="name" class="search-input" placeholder="e.g., Argo Bromo" required maxlength="20">
@@ -28,7 +28,7 @@
                 <input type="number" name="totalSeats" class="search-input" placeholder="e.g., 50" required min="1">
             </div>
             <button type="submit" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Tambah Kereta
+                <i class="fas fa-plus"></i> Tambah
             </button>
         </div>
     </form>
@@ -59,13 +59,13 @@
             <tbody>
                 {{#each trains}}
                 <tr>
-                    <td>{{this.id}}</td>
+                    <td style="color: var(--text-muted);">{{this.id}}</td>
                     <td>
                         <div style="display: flex; align-items: center; gap: 10px;">
-                            <div style="width: 40px; height: 40px; background: rgba(254, 240, 138, 0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                                <i class="fas fa-train" style="color: #fef08a;"></i>
+                            <div style="width: 34px; height: 34px; background: var(--primary-light); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                <i class="fas fa-train" style="color: var(--primary); font-size: 0.75rem;"></i>
                             </div>
-                            <strong>{{this.name}}</strong>
+                            <strong style="color: var(--text-primary);">{{this.name}}</strong>
                         </div>
                     </td>
                     <td>
@@ -78,7 +78,7 @@
                         {{/if}}
                     </td>
                     <td>{{this.totalSeats}} kursi</td>
-                    <td>{{formatDate this.createdAt}}</td>
+                    <td style="color: var(--text-muted);">{{formatDate this.createdAt}}</td>
                     {{#if (eq ../userRole "ADMIN")}}
                     <td>
                         <div class="action-btns">
@@ -99,7 +99,7 @@
     {{else}}
     <div class="empty-state">
         <i class="fas fa-train"></i>
-        <h3>Masih Kosong</h3>
+        <h3>Belum Ada Data</h3>
         <p>Menunggu Admin menambahkan data kereta</p>
     </div>
     {{/if}}
@@ -109,39 +109,32 @@
 <div class="modal-overlay" id="deleteModal">
     <div class="modal">
         <div class="modal-header">
-            <h3 class="modal-title"><i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i> Konfirmasi Hapus</h3>
-            <button class="modal-close" onclick="closeModal('deleteModal')">
-                <i class="fas fa-times"></i>
-            </button>
+            <h3 class="modal-title"><i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i> Konfirmasi Hapus</h3>
+            <button class="modal-close" onclick="closeModal('deleteModal')"><i class="fas fa-times"></i></button>
         </div>
         <div class="modal-body">
-            <p>Apakah Anda yakin ingin menghapus kereta "<span id="deleteTrainName"></span>"?</p>
-            <p style="color: #888; font-size: 0.9rem; margin-top: 10px;">Tindakan ini tidak dapat dibatalkan. Pastikan kereta ini tidak digunakan dalam jadwal apapun.</p>
+            <p>Apakah Anda yakin ingin menghapus kereta "<span id="deleteTrainName" style="font-weight: 600; color: var(--text-primary);"></span>"?</p>
+            <p style="color: var(--text-muted); font-size: 0.8125rem; margin-top: 8px;">Tindakan ini tidak dapat dibatalkan. Pastikan kereta ini tidak digunakan dalam jadwal apapun.</p>
         </div>
         <div class="modal-footer">
             <button class="btn btn-secondary" onclick="closeModal('deleteModal')">Batal</button>
-            <button class="btn btn-danger" id="confirmDeleteBtn">Hapus</button>
+            <button class="btn btn-danger" id="confirmDeleteBtn"><i class="fas fa-trash"></i> Hapus</button>
         </div>
     </div>
 </div>
 
 <script>
     let trainToDelete = null;
-    
     function deleteTrain(id, name) {
         trainToDelete = id;
         document.getElementById('deleteTrainName').textContent = name;
         openModal('deleteModal');
     }
-    
     document.getElementById('confirmDeleteBtn').addEventListener('click', async function() {
         if (trainToDelete) {
             try {
-                const response = await fetch(`/trains/${trainToDelete}`, {
-                    method: 'DELETE',
-                });
+                const response = await fetch('/trains/' + trainToDelete, { method: 'DELETE' });
                 const result = await response.json();
-                
                 if (result.success) {
                     window.location.href = '/trains?message=Kereta berhasil dihapus&messageType=success';
                 } else {

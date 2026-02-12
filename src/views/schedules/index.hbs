@@ -4,13 +4,12 @@
 </div>
 
 {{#if (eq userRole "ADMIN")}}
-<!-- Admin: Form Tambah Jadwal -->
-<div class="card" style="margin-bottom: 30px;">
+<div class="card" style="margin-bottom: 24px;">
     <div class="card-header">
         <h3 class="card-title"><i class="fas fa-plus-circle"></i> Tambah Jadwal Baru</h3>
     </div>
     <form action="/schedules" method="POST">
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
             <div class="form-group" style="margin: 0;">
                 <label class="form-label">Kereta</label>
                 <select name="trainId" class="search-input" required>
@@ -51,7 +50,7 @@
                 <input type="number" name="price" class="search-input" placeholder="e.g., 150000" required min="1000">
             </div>
         </div>
-        <div style="margin-top: 15px;">
+        <div style="margin-top: 16px;">
             <button type="submit" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Tambah Jadwal
             </button>
@@ -101,31 +100,31 @@
             <tbody>
                 {{#each schedules}}
                 <tr>
-                    <td>{{this.id}}</td>
+                    <td style="color: var(--text-muted);">{{this.id}}</td>
                     <td>
                         <div style="display: flex; align-items: center; gap: 10px;">
-                            <div style="width: 40px; height: 40px; background: rgba(59, 130, 246, 0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                                <i class="fas fa-train" style="color: #3b82f6;"></i>
+                            <div style="width: 34px; height: 34px; background: var(--primary-light); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-train" style="color: var(--primary); font-size: 0.75rem;"></i>
                             </div>
                             <div>
-                                <strong>{{this.train.name}}</strong>
-                                <div style="font-size: 0.8rem; color: #888;">{{this.train.type}}</div>
+                                <strong style="color: var(--text-primary);">{{this.train.name}}</strong>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">{{this.train.type}}</div>
                             </div>
                         </div>
                     </td>
                     <td>
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <span class="badge badge-info">{{this.originStation.code}}</span>
-                            <i class="fas fa-arrow-right" style="color: #666;"></i>
+                            <i class="fas fa-arrow-right" style="color: var(--text-muted); font-size: 0.7rem;"></i>
                             <span class="badge badge-success">{{this.destinationStation.code}}</span>
                         </div>
-                        <div style="font-size: 0.8rem; color: #888; margin-top: 4px;">
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">
                             {{this.originStation.name}} → {{this.destinationStation.name}}
                         </div>
                     </td>
-                    <td>{{formatDate this.departureTime}}</td>
-                    <td>{{formatDate this.arrivalTime}}</td>
-                    <td><strong style="color: #22c55e;">{{formatPrice this.price}}</strong></td>
+                    <td style="color: var(--text-secondary); font-size: 0.8125rem;">{{formatDate this.departureTime}}</td>
+                    <td style="color: var(--text-secondary); font-size: 0.8125rem;">{{formatDate this.arrivalTime}}</td>
+                    <td><strong style="color: var(--success);">{{formatPrice this.price}}</strong></td>
                     <td>
                         {{#if (eq this.journeyStatus "BELUM_BERANGKAT")}}
                         <span class="badge badge-warning"><i class="fas fa-clock"></i> Belum Berangkat</span>
@@ -144,7 +143,7 @@
                             </a>
                             {{#if (eq this.journeyStatus "BELUM_BERANGKAT")}}
                             {{#if (not (eq ../userRole "ADMIN"))}}
-                            <button class="btn-icon" style="background: rgba(34, 197, 94, 0.2); color: #22c55e;" onclick="openBookingModal({{this.id}}, '{{this.train.name}}', {{this.price}})" title="Pesan Tiket">
+                            <button class="btn-icon" style="background: var(--success-light); color: var(--success);" onclick="openBookingModal({{this.id}}, '{{this.train.name}}', {{this.price}})" title="Pesan Tiket">
                                 <i class="fas fa-ticket-alt"></i>
                             </button>
                             {{/if}}
@@ -176,7 +175,7 @@
 <div class="modal-overlay" id="bookingModal">
     <div class="modal">
         <div class="modal-header">
-            <h3 class="modal-title"><i class="fas fa-ticket-alt" style="color: #22c55e;"></i> Pesan Tiket</h3>
+            <h3 class="modal-title"><i class="fas fa-ticket-alt" style="color: var(--success);"></i> Pesan Tiket</h3>
             <button class="modal-close" onclick="closeModal('bookingModal')">
                 <i class="fas fa-times"></i>
             </button>
@@ -184,18 +183,18 @@
         <form action="/bookings" method="POST">
             <input type="hidden" name="scheduleId" id="bookingScheduleId">
             <div class="modal-body">
-                <p style="margin-bottom: 15px;">Kereta: <strong id="bookingTrainName"></strong></p>
-                <p style="margin-bottom: 15px;">Harga per kursi: <strong id="bookingPrice" style="color: #22c55e;"></strong></p>
-                <p style="margin-bottom: 20px; color: #888;">Saldo Anda: <strong style="color: #22c55e;">{{formatBalance balance}}</strong></p>
+                <p style="margin-bottom: 12px; color: var(--text-secondary);">Kereta: <strong style="color: var(--text-primary);" id="bookingTrainName"></strong></p>
+                <p style="margin-bottom: 12px; color: var(--text-secondary);">Harga per kursi: <strong id="bookingPrice" style="color: var(--success);"></strong></p>
+                <p style="margin-bottom: 16px; color: var(--text-muted);">Saldo Anda: <strong style="color: var(--success);">{{formatBalance balance}}</strong></p>
                 
                 <div class="form-group">
                     <label class="form-label">Jumlah Kursi</label>
                     <input type="number" name="seatCount" id="bookingSeatCount" class="form-control" value="1" min="1" max="10" required onchange="updateTotalPrice()">
                 </div>
                 
-                <div style="padding: 15px; background: rgba(34, 197, 94, 0.1); border-radius: 10px; margin-top: 15px;">
-                    <p style="margin: 0; color: #888;">Total Harga:</p>
-                    <p style="font-size: 1.5rem; font-weight: bold; color: #22c55e; margin: 5px 0;" id="bookingTotalPrice">Rp 0</p>
+                <div style="padding: 16px; background: var(--success-light); border-radius: var(--radius-md); margin-top: 16px;">
+                    <p style="margin: 0; color: var(--text-muted); font-size: 0.8125rem;">Total Harga:</p>
+                    <p style="font-size: 1.5rem; font-weight: 700; color: var(--success); margin: 4px 0 0;" id="bookingTotalPrice">Rp 0</p>
                 </div>
             </div>
             <div class="modal-footer">
@@ -214,18 +213,18 @@
 <div class="modal-overlay" id="deleteModal">
     <div class="modal">
         <div class="modal-header">
-            <h3 class="modal-title"><i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i> Konfirmasi Hapus</h3>
+            <h3 class="modal-title"><i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i> Konfirmasi Hapus</h3>
             <button class="modal-close" onclick="closeModal('deleteModal')">
                 <i class="fas fa-times"></i>
             </button>
         </div>
         <div class="modal-body">
             <p>Apakah Anda yakin ingin menghapus jadwal ini?</p>
-            <p style="color: #888; font-size: 0.9rem; margin-top: 10px;">Tindakan ini tidak dapat dibatalkan.</p>
+            <p style="color: var(--text-muted); font-size: 0.8125rem; margin-top: 8px;">Tindakan ini tidak dapat dibatalkan.</p>
         </div>
         <div class="modal-footer">
             <button class="btn btn-secondary" onclick="closeModal('deleteModal')">Batal</button>
-            <button class="btn btn-danger" id="confirmDeleteBtn">Hapus</button>
+            <button class="btn btn-danger" id="confirmDeleteBtn"><i class="fas fa-trash"></i> Hapus</button>
         </div>
     </div>
 </div>
@@ -242,11 +241,8 @@
     document.getElementById('confirmDeleteBtn').addEventListener('click', async function() {
         if (scheduleToDelete) {
             try {
-                const response = await fetch(`/schedules/${scheduleToDelete}`, {
-                    method: 'DELETE',
-                });
+                const response = await fetch('/schedules/' + scheduleToDelete, { method: 'DELETE' });
                 const result = await response.json();
-                
                 if (result.success) {
                     window.location.href = '/schedules?message=Jadwal berhasil dihapus&messageType=success';
                 } else {

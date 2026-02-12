@@ -1,8 +1,13 @@
 <div class="page-header">
-    <a href="/bookings" class="btn btn-secondary" style="margin-bottom: 20px;">
-        <i class="fas fa-arrow-left"></i> Kembali ke Pemesanan
-    </a>
-    <h1><i class="fas fa-ticket-alt"></i> Detail Pemesanan</h1>
+    <div style="display: flex; align-items: center; gap: 12px;">
+        <a href="/bookings" class="btn btn-secondary" style="padding: 8px 12px;">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <div>
+            <h1><i class="fas fa-ticket-alt"></i> Detail Pemesanan</h1>
+            <p>Informasi lengkap pemesanan tiket</p>
+        </div>
+    </div>
 </div>
 
 {{#if booking}}
@@ -11,7 +16,7 @@
         <h3 class="card-title">
             <i class="fas fa-receipt"></i> Booking #{{booking.bookingCode}}
         </h3>
-        <div style="display: flex; gap: 10px; align-items: center;">
+        <div style="display: flex; gap: 8px; align-items: center;">
             {{#if (eq booking.status "CONFIRMED")}}
             <span class="badge badge-success"><i class="fas fa-check-circle"></i> Terkonfirmasi</span>
             {{else if (eq booking.status "PENDING")}}
@@ -32,165 +37,159 @@
         </div>
     </div>
     
-    <div style="padding: 30px;">
-        <!-- Payment Alert for Pending -->
-        {{#if (eq booking.status "PENDING")}}
-        {{#if (eq booking.schedule.journeyStatus "BELUM_BERANGKAT")}}
-        <div style="padding: 20px; background: rgba(251, 191, 36, 0.2); border: 1px solid rgba(251, 191, 36, 0.5); border-radius: 12px; margin-bottom: 30px;">
-            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
-                <div>
-                    <h4 style="margin: 0 0 5px 0; color: #fbbf24;"><i class="fas fa-exclamation-triangle"></i> Menunggu Pembayaran</h4>
-                    <p style="margin: 0; color: #888;">Silakan bayar pesanan Anda sebelum kereta berangkat.</p>
-                    <p style="margin: 5px 0 0 0; color: white;">Saldo Anda: <strong style="color: #22c55e;">{{formatBalance balance}}</strong></p>
-                </div>
-                <form action="/bookings/{{booking.id}}/pay" method="POST">
-                    <button type="submit" class="btn btn-success btn-lg">
-                        <i class="fas fa-credit-card"></i> Bayar Sekarang ({{formatPrice booking.totalPrice}})
-                    </button>
-                </form>
+    <!-- Payment Alert for Pending -->
+    {{#if (eq booking.status "PENDING")}}
+    {{#if (eq booking.schedule.journeyStatus "BELUM_BERANGKAT")}}
+    <div style="padding: 16px; background: var(--warning-light); border: 1px solid rgba(251, 191, 36, 0.3); border-radius: var(--radius-lg); margin-bottom: 24px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+            <div>
+                <h4 style="margin: 0 0 4px 0; color: var(--warning); font-size: 0.875rem;"><i class="fas fa-exclamation-triangle"></i> Menunggu Pembayaran</h4>
+                <p style="margin: 0; color: var(--text-muted); font-size: 0.8125rem;">Bayar sebelum kereta berangkat.</p>
+                <p style="margin: 4px 0 0 0; color: var(--text-secondary); font-size: 0.8125rem;">Saldo: <strong style="color: var(--success);">{{formatBalance balance}}</strong></p>
             </div>
-        </div>
-        {{else}}
-        <div style="padding: 20px; background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.5); border-radius: 12px; margin-bottom: 30px;">
-            <h4 style="margin: 0 0 5px 0; color: #ef4444;"><i class="fas fa-times-circle"></i> Tidak Dapat Membayar</h4>
-            <p style="margin: 0; color: #888;">Pembayaran tidak dapat dilakukan karena kereta sudah berangkat atau sudah tiba.</p>
-        </div>
-        {{/if}}
-        {{/if}}
-        
-        {{#if (eq booking.status "CONFIRMED")}}
-        <div style="padding: 20px; background: rgba(34, 197, 94, 0.2); border: 1px solid rgba(34, 197, 94, 0.5); border-radius: 12px; margin-bottom: 30px;">
-            <h4 style="margin: 0 0 5px 0; color: #22c55e;"><i class="fas fa-check-circle"></i> Pembayaran Berhasil</h4>
-            <p style="margin: 0; color: #888;">Dibayar pada: <strong style="color: white;">{{formatDate booking.paidAt}}</strong></p>
-        </div>
-        {{/if}}
-        
-        {{#if (eq booking.status "CANCELLED")}}
-        <div style="padding: 20px; background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.5); border-radius: 12px; margin-bottom: 30px;">
-            <h4 style="margin: 0 0 5px 0; color: #ef4444;"><i class="fas fa-times-circle"></i> Pemesanan Dibatalkan</h4>
-            <p style="margin: 0; color: #888;">Pemesanan ini telah dibatalkan.</p>
-        </div>
-        {{/if}}
-    
-        <!-- Booking Summary -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
-            <div style="padding: 20px; background: rgba(59, 130, 246, 0.1); border-radius: 12px; text-align: center;">
-                <div style="font-size: 0.9rem; color: #888; margin-bottom: 5px;">Kursi Dipesan</div>
-                <div style="font-size: 2rem; font-weight: bold; color: #3b82f6;">{{booking.seatCount}}</div>
-            </div>
-            <div style="padding: 20px; background: rgba(34, 197, 94, 0.1); border-radius: 12px; text-align: center;">
-                <div style="font-size: 0.9rem; color: #888; margin-bottom: 5px;">Total Harga</div>
-                <div style="font-size: 2rem; font-weight: bold; color: #22c55e;">{{formatPrice booking.totalPrice}}</div>
-            </div>
-            <div style="padding: 20px; background: rgba(251, 191, 36, 0.1); border-radius: 12px; text-align: center;">
-                <div style="font-size: 0.9rem; color: #888; margin-bottom: 5px;">Dipesan Pada</div>
-                <div style="font-size: 1rem; font-weight: bold; color: #fbbf24;">{{formatDate booking.createdAt}}</div>
-            </div>
-        </div>
-
-        <!-- Train Info -->
-        <div style="margin-bottom: 30px;">
-            <h4 style="color: #888; margin-bottom: 15px;"><i class="fas fa-train"></i> Informasi Kereta</h4>
-            <div style="display: flex; align-items: center; gap: 20px; padding: 20px; background: rgba(59, 130, 246, 0.1); border-radius: 12px;">
-                <div style="width: 60px; height: 60px; background: rgba(59, 130, 246, 0.2); border-radius: 15px; display: flex; align-items: center; justify-content: center;">
-                    <i class="fas fa-train" style="font-size: 1.5rem; color: #3b82f6;"></i>
-                </div>
-                <div>
-                    <h3 style="margin: 0; color: white;">{{booking.schedule.train.name}}</h3>
-                    <span class="badge badge-primary" style="margin-top: 8px;">{{booking.schedule.train.type}}</span>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Route Info -->
-        <div style="margin-bottom: 30px;">
-            <h4 style="color: #888; margin-bottom: 15px;"><i class="fas fa-route"></i> Informasi Rute</h4>
-            <div style="display: flex; align-items: center; gap: 20px;">
-                <div style="text-align: center; flex: 1;">
-                    <div style="font-size: 0.9rem; color: #888;">Dari</div>
-                    <div style="font-size: 1.8rem; font-weight: bold; color: #3b82f6;">{{booking.schedule.originStation.code}}</div>
-                    <div style="color: white;">{{booking.schedule.originStation.name}}</div>
-                    <div style="font-size: 0.85rem; color: #888;">{{booking.schedule.originStation.city}}</div>
-                </div>
-                
-                <div style="flex: 0 0 100px; display: flex; flex-direction: column; align-items: center;">
-                    <div style="width: 100%; height: 2px; background: linear-gradient(90deg, #3b82f6, #22c55e);"></div>
-                    <i class="fas fa-train" style="color: #666; margin: 10px 0;"></i>
-                </div>
-                
-                <div style="text-align: center; flex: 1;">
-                    <div style="font-size: 0.9rem; color: #888;">Ke</div>
-                    <div style="font-size: 1.8rem; font-weight: bold; color: #22c55e;">{{booking.schedule.destinationStation.code}}</div>
-                    <div style="color: white;">{{booking.schedule.destinationStation.name}}</div>
-                    <div style="font-size: 0.85rem; color: #888;">{{booking.schedule.destinationStation.city}}</div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Time Info -->
-        <div style="margin-bottom: 30px;">
-            <h4 style="color: #888; margin-bottom: 15px;"><i class="fas fa-clock"></i> Waktu Perjalanan</h4>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                <div style="padding: 20px; background: rgba(255,255,255,0.05); border-radius: 12px; border-left: 4px solid #3b82f6;">
-                    <div style="font-size: 0.9rem; color: #888;">Keberangkatan</div>
-                    <div style="font-size: 1.2rem; font-weight: bold; color: white;">{{formatDate booking.schedule.departureTime}}</div>
-                </div>
-                <div style="padding: 20px; background: rgba(255,255,255,0.05); border-radius: 12px; border-left: 4px solid #22c55e;">
-                    <div style="font-size: 0.9rem; color: #888;">Kedatangan</div>
-                    <div style="font-size: 1.2rem; font-weight: bold; color: white;">{{formatDate booking.schedule.arrivalTime}}</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Passenger Info -->
-        {{#if booking.user}}
-        <div style="margin-bottom: 30px;">
-            <h4 style="color: #888; margin-bottom: 15px;"><i class="fas fa-user"></i> Informasi Penumpang</h4>
-            <div style="padding: 20px; background: rgba(255,255,255,0.05); border-radius: 12px;">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                    <div>
-                        <span style="color: #888;">Nama:</span>
-                        <span style="color: white; margin-left: 10px;">{{booking.user.name}}</span>
-                    </div>
-                    <div>
-                        <span style="color: #888;">Email:</span>
-                        <span style="color: white; margin-left: 10px;">{{booking.user.email}}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {{/if}}
-
-        <!-- E-Ticket (Only show if confirmed) -->
-        {{#if (eq booking.status "CONFIRMED")}}
-        <div style="margin-top: 30px; padding: 25px; background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2)); border-radius: 12px; border: 2px dashed rgba(255,255,255,0.2);">
-            <div style="text-align: center;">
-                <i class="fas fa-qrcode" style="font-size: 4rem; color: white; margin-bottom: 15px;"></i>
-                <h3 style="color: white; margin: 0;">E-Ticket</h3>
-                <p style="color: #888; margin-top: 5px;">Tunjukkan kode ini di stasiun</p>
-                <div style="font-size: 1.5rem; font-weight: bold; color: #fef08a; margin-top: 15px; letter-spacing: 3px;">
-                    {{booking.bookingCode}}
-                </div>
-            </div>
-        </div>
-        {{/if}}
-        
-        <!-- Actions for Pending -->
-        {{#if (eq booking.status "PENDING")}}
-        {{#if (eq booking.schedule.journeyStatus "BELUM_BERANGKAT")}}
-        <div style="display: flex; gap: 15px; justify-content: center; margin-top: 30px;">
             <form action="/bookings/{{booking.id}}/pay" method="POST">
                 <button type="submit" class="btn btn-success">
-                    <i class="fas fa-credit-card"></i> Bayar Sekarang
+                    <i class="fas fa-credit-card"></i> Bayar ({{formatPrice booking.totalPrice}})
                 </button>
             </form>
-            <button class="btn btn-danger" onclick="cancelBooking({{booking.id}})">
-                <i class="fas fa-times"></i> Batalkan Pemesanan
-            </button>
         </div>
-        {{/if}}
-        {{/if}}
     </div>
+    {{else}}
+    <div style="padding: 16px; background: var(--danger-light); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: var(--radius-lg); margin-bottom: 24px;">
+        <h4 style="margin: 0 0 4px 0; color: var(--danger); font-size: 0.875rem;"><i class="fas fa-times-circle"></i> Tidak Dapat Membayar</h4>
+        <p style="margin: 0; color: var(--text-muted); font-size: 0.8125rem;">Kereta sudah berangkat atau sudah tiba.</p>
+    </div>
+    {{/if}}
+    {{/if}}
+    
+    {{#if (eq booking.status "CONFIRMED")}}
+    <div style="padding: 16px; background: var(--success-light); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: var(--radius-lg); margin-bottom: 24px;">
+        <h4 style="margin: 0 0 4px 0; color: var(--success); font-size: 0.875rem;"><i class="fas fa-check-circle"></i> Pembayaran Berhasil</h4>
+        <p style="margin: 0; color: var(--text-muted); font-size: 0.8125rem;">Dibayar pada: <strong style="color: var(--text-primary);">{{formatDate booking.paidAt}}</strong></p>
+    </div>
+    {{/if}}
+    
+    {{#if (eq booking.status "CANCELLED")}}
+    <div style="padding: 16px; background: var(--danger-light); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: var(--radius-lg); margin-bottom: 24px;">
+        <h4 style="margin: 0 0 4px 0; color: var(--danger); font-size: 0.875rem;"><i class="fas fa-times-circle"></i> Pemesanan Dibatalkan</h4>
+        <p style="margin: 0; color: var(--text-muted); font-size: 0.8125rem;">Pemesanan ini telah dibatalkan.</p>
+    </div>
+    {{/if}}
+
+    <!-- Booking Summary -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px;">
+        <div style="padding: 16px; background: var(--primary-light); border-radius: var(--radius-lg); text-align: center;">
+            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Kursi Dipesan</div>
+            <div style="font-size: 1.75rem; font-weight: 700; color: var(--primary);">{{booking.seatCount}}</div>
+        </div>
+        <div style="padding: 16px; background: var(--success-light); border-radius: var(--radius-lg); text-align: center;">
+            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Total Harga</div>
+            <div style="font-size: 1.75rem; font-weight: 700; color: var(--success);">{{formatPrice booking.totalPrice}}</div>
+        </div>
+        <div style="padding: 16px; background: var(--warning-light); border-radius: var(--radius-lg); text-align: center;">
+            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Dipesan Pada</div>
+            <div style="font-size: 0.875rem; font-weight: 600; color: var(--warning);">{{formatDate booking.createdAt}}</div>
+        </div>
+    </div>
+
+    <!-- Train Info -->
+    <div style="margin-bottom: 24px;">
+        <h4 style="color: var(--text-muted); margin-bottom: 12px; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em;"><i class="fas fa-train"></i> Informasi Kereta</h4>
+        <div style="display: flex; align-items: center; gap: 16px; padding: 16px; background: var(--primary-light); border-radius: var(--radius-lg);">
+            <div style="width: 48px; height: 48px; background: var(--bg-surface); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-train" style="font-size: 1.25rem; color: var(--primary);"></i>
+            </div>
+            <div>
+                <h3 style="margin: 0; color: var(--text-primary); font-size: 1.125rem;">{{booking.schedule.train.name}}</h3>
+                <span class="badge badge-primary" style="margin-top: 6px;">{{booking.schedule.train.type}}</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Route Info -->
+    <div style="margin-bottom: 24px;">
+        <h4 style="color: var(--text-muted); margin-bottom: 12px; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em;"><i class="fas fa-route"></i> Informasi Rute</h4>
+        <div style="display: flex; align-items: center; gap: 16px;">
+            <div style="text-align: center; flex: 1;">
+                <div style="font-size: 0.8125rem; color: var(--text-muted);">Dari</div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">{{booking.schedule.originStation.code}}</div>
+                <div style="color: var(--text-primary); font-size: 0.875rem;">{{booking.schedule.originStation.name}}</div>
+            </div>
+            <div style="flex: 0 0 80px; display: flex; flex-direction: column; align-items: center;">
+                <div style="width: 100%; height: 2px; background: linear-gradient(90deg, var(--primary), var(--success));"></div>
+                <i class="fas fa-train" style="color: var(--text-muted); margin: 8px 0; font-size: 0.75rem;"></i>
+            </div>
+            <div style="text-align: center; flex: 1;">
+                <div style="font-size: 0.8125rem; color: var(--text-muted);">Ke</div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: var(--success);">{{booking.schedule.destinationStation.code}}</div>
+                <div style="color: var(--text-primary); font-size: 0.875rem;">{{booking.schedule.destinationStation.name}}</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Time Info -->
+    <div style="margin-bottom: 24px;">
+        <h4 style="color: var(--text-muted); margin-bottom: 12px; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em;"><i class="fas fa-clock"></i> Waktu Perjalanan</h4>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div style="padding: 16px; background: var(--bg-elevated); border-radius: var(--radius-md); border-left: 3px solid var(--primary);">
+                <div style="font-size: 0.8125rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.03em;">Keberangkatan</div>
+                <div style="font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-top: 4px;">{{formatDate booking.schedule.departureTime}}</div>
+            </div>
+            <div style="padding: 16px; background: var(--bg-elevated); border-radius: var(--radius-md); border-left: 3px solid var(--success);">
+                <div style="font-size: 0.8125rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.03em;">Kedatangan</div>
+                <div style="font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-top: 4px;">{{formatDate booking.schedule.arrivalTime}}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Passenger Info -->
+    {{#if booking.user}}
+    <div style="margin-bottom: 24px;">
+        <h4 style="color: var(--text-muted); margin-bottom: 12px; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em;"><i class="fas fa-user"></i> Informasi Penumpang</h4>
+        <div style="padding: 16px; background: var(--bg-elevated); border-radius: var(--radius-md);">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div>
+                    <span style="color: var(--text-muted); font-size: 0.8125rem;">Nama:</span>
+                    <span style="color: var(--text-primary); margin-left: 8px; font-weight: 500;">{{booking.user.name}}</span>
+                </div>
+                <div>
+                    <span style="color: var(--text-muted); font-size: 0.8125rem;">Email:</span>
+                    <span style="color: var(--text-primary); margin-left: 8px; font-weight: 500;">{{booking.user.email}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{/if}}
+
+    <!-- E-Ticket -->
+    {{#if (eq booking.status "CONFIRMED")}}
+    <div style="margin-top: 24px; padding: 24px; background: linear-gradient(135deg, var(--primary-light), rgba(139, 92, 246, 0.15)); border-radius: var(--radius-lg); border: 2px dashed var(--border);">
+        <div style="text-align: center;">
+            <i class="fas fa-qrcode" style="font-size: 3rem; color: var(--text-primary); margin-bottom: 12px;"></i>
+            <h3 style="color: var(--text-primary); margin: 0; font-size: 1.125rem;">E-Ticket</h3>
+            <p style="color: var(--text-muted); margin-top: 4px; font-size: 0.8125rem;">Tunjukkan kode ini di stasiun</p>
+            <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary); margin-top: 12px; letter-spacing: 3px; font-family: 'SF Mono', 'Cascadia Code', monospace;">
+                {{booking.bookingCode}}
+            </div>
+        </div>
+    </div>
+    {{/if}}
+    
+    <!-- Actions for Pending -->
+    {{#if (eq booking.status "PENDING")}}
+    {{#if (eq booking.schedule.journeyStatus "BELUM_BERANGKAT")}}
+    <div style="display: flex; gap: 12px; justify-content: center; margin-top: 24px;">
+        <form action="/bookings/{{booking.id}}/pay" method="POST">
+            <button type="submit" class="btn btn-success">
+                <i class="fas fa-credit-card"></i> Bayar Sekarang
+            </button>
+        </form>
+        <button class="btn btn-danger" onclick="cancelBooking({{booking.id}})">
+            <i class="fas fa-times"></i> Batalkan
+        </button>
+    </div>
+    {{/if}}
+    {{/if}}
 </div>
 {{else}}
 <div class="card">
@@ -198,7 +197,7 @@
         <i class="fas fa-exclamation-triangle"></i>
         <h3>Pemesanan Tidak Ditemukan</h3>
         <p>Pemesanan yang Anda cari tidak ada atau telah dihapus.</p>
-        <a href="/bookings" class="btn btn-primary" style="margin-top: 20px;">
+        <a href="/bookings" class="btn btn-primary" style="margin-top: 16px;">
             <i class="fas fa-arrow-left"></i> Kembali ke Pemesanan
         </a>
     </div>
@@ -209,18 +208,18 @@
 <div class="modal-overlay" id="cancelModal">
     <div class="modal">
         <div class="modal-header">
-            <h3 class="modal-title"><i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i> Batalkan Pemesanan</h3>
+            <h3 class="modal-title"><i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i> Batalkan Pemesanan</h3>
             <button class="modal-close" onclick="closeModal('cancelModal')">
                 <i class="fas fa-times"></i>
             </button>
         </div>
         <div class="modal-body">
             <p>Apakah Anda yakin ingin membatalkan pemesanan ini?</p>
-            <p style="color: #888; font-size: 0.9rem; margin-top: 10px;">Pemesanan yang belum dibayar tidak akan mendapat refund.</p>
+            <p style="color: var(--text-muted); font-size: 0.8125rem; margin-top: 8px;">Pemesanan yang belum dibayar tidak akan mendapat refund.</p>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-secondary" onclick="closeModal('cancelModal')">Pertahankan Pemesanan</button>
-            <button class="btn btn-danger" id="confirmCancelBtn">Batalkan Pemesanan</button>
+            <button class="btn btn-secondary" onclick="closeModal('cancelModal')">Pertahankan</button>
+            <button class="btn btn-danger" id="confirmCancelBtn"><i class="fas fa-times"></i> Batalkan Pemesanan</button>
         </div>
     </div>
 </div>
@@ -236,11 +235,8 @@
     document.getElementById('confirmCancelBtn').addEventListener('click', async function() {
         if (bookingToCancel) {
             try {
-                const response = await fetch(`/bookings/${bookingToCancel}`, {
-                    method: 'DELETE',
-                });
+                const response = await fetch('/bookings/' + bookingToCancel, { method: 'DELETE' });
                 const result = await response.json();
-                
                 if (result.success) {
                     let message = 'Pemesanan berhasil dibatalkan';
                     if (result.refundAmount && result.refundAmount > 0) {

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Background -->
+  <rect width="128" height="128" fill="#3b82f6" rx="24"/>
+  
+  <!-- Train body -->
+  <g transform="translate(64, 64)">
+    <!-- Main train car -->
+    <rect x="-28" y="-18" width="56" height="28" fill="#fff" rx="4"/>
+    
+    <!-- Window -->
+    <rect x="-20" y="-14" width="16" height="12" fill="#0891b2" rx="2"/>
+    
+    <!-- Door -->
+    <rect x="0" y="-12" width="14" height="16" fill="#1e40af" rx="2"/>
+    
+    <!-- Wheels -->
+    <circle cx="-18" cy="14" r="5" fill="#fff"/>
+    <circle cx="18" cy="14" r="5" fill="#fff"/>
+    
+    <!-- Wheels centers -->
+    <circle cx="-18" cy="14" r="2" fill="#333"/>
+    <circle cx="18" cy="14" r="2" fill="#333"/>
+    
+    <!-- Rail -->
+    <rect x="-35" y="18" width="70" height="2" fill="#1e40af"/>
+  </g>
+</svg>

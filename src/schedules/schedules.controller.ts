@@ -151,6 +151,12 @@ export class SchedulesController {
     // Get seat availability
     const seatInfo = schedule ? await this.bookingsService.getAvailableSeats(Number(id)) : null;
     
+    // Check if user has an active booking for this schedule
+    let userActiveBooking: any = null;
+    if (session?.userId && schedule) {
+      userActiveBooking = await this.bookingsService.findActiveBookingByUserAndSchedule(session.userId, Number(id));
+    }
+    
     // Get trains and stations for admin edit form
     const trains = await this.trainsService.findAll();
     const stations = await this.stationsService.findAll();
@@ -159,6 +165,7 @@ export class SchedulesController {
       title: schedule ? `Jadwal #${schedule.id}` : 'Jadwal Tidak Ditemukan',
       schedule,
       seatInfo,
+      userActiveBooking,
       trains,
       stations,
       isLoggedIn: session?.isLoggedIn || false,

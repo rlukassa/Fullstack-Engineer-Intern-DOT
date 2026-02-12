@@ -12,8 +12,13 @@ export class TrainsController {
   ) {}
 
   @Post()
-  async create(@Body() createTrainDto: CreateTrainDto, @Res() res: Response) {
+  async create(@Body() body: any, @Res() res: Response) {
     try {
+      const createTrainDto: CreateTrainDto = {
+        name: body.name,
+        type: body.type,
+        totalSeats: parseInt(body.totalSeats, 10) || 0,
+      };
       await this.trainsService.create(createTrainDto);
       return res.redirect('/trains?message=Kereta berhasil dibuat&messageType=success');
     } catch (error: any) {

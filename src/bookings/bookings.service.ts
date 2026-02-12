@@ -44,7 +44,7 @@ export class BookingsService {
     }
 
     const bookedSeats = await this.getBookedSeats(scheduleId);
-    const totalSeats = schedule.train.totalSeats;
+    const totalSeats = Number(schedule.train.totalSeats) || 0;
     const availableSeats = Math.max(0, totalSeats - bookedSeats);
 
     return { available: availableSeats, total: totalSeats, booked: bookedSeats };
@@ -74,7 +74,7 @@ export class BookingsService {
     const seatInfo = await this.getAvailableSeats(createBookingDto.scheduleId);
     if (seatInfo.available < seatCount) {
       if (seatInfo.available === 0) {
-        throw new Error('Kursi sudah habis untuk jadwal ini');
+        throw new Error(`Kursi sudah habis untuk jadwal ini (total: ${seatInfo.total}, terpesan: ${seatInfo.booked})`);
       }
       throw new Error(`Hanya tersisa ${seatInfo.available} kursi, Anda memesan ${seatCount} kursi`);
     }
@@ -204,6 +204,16 @@ export class BookingsService {
       order: {
         createdAt: 'DESC',
       },
+    });
+  }
+
+  // Find user's active (PENDING/CONFIRMED) booking for a specific schedule
+  async findActiveBookingByUserAndSchedule(userId: number, scheduleId: number): Promise<Booking | null> {
+    return this.bookingsRepository.findOne({
+      where: [
+        { userId, scheduleId, status: BookingStatus.PENDING },
+        { userId, scheduleId, status: BookingStatus.CONFIRMED },
+      ],
     });
   }
 

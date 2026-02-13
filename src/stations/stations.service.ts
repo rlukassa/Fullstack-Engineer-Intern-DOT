@@ -16,7 +16,15 @@ export class StationsService {
     return this.stationsRepository.save(station);
   }
 
-  async findAll() {
+  async findAll(search?: string) {
+    if (search) {
+      return this.stationsRepository
+        .createQueryBuilder('station')
+        .where('station.name ILIKE :query', { query: `%${search}%` })
+        .orWhere('station.code ILIKE :query', { query: `%${search}%` })
+        .orderBy('station.id', 'ASC')
+        .getMany();
+    }
     return this.stationsRepository.find({
       order: {
         id: 'ASC',

@@ -30,14 +30,16 @@ export class TrainsController {
   @Render('trains/index')
   async findAll(
     @Req() req: Request,
+    @Query('search') search?: string,
     @Query('message') message?: string,
     @Query('messageType') messageType?: string,
   ) {
     const session = (req as any).session;
-    const trains = await this.trainsService.findAll();
+    const trains = await this.trainsService.findAll(search);
     return {
       title: 'Trains Management',
       trains,
+      search,
       isLoggedIn: session?.isLoggedIn || false,
       username: session?.username || 'Guest',
       userRole: session?.role || '',

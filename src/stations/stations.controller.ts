@@ -21,14 +21,16 @@ export class StationsController {
   @Render('stations/index')
   async findAll(
     @Req() req: Request,
+    @Query('search') search?: string,
     @Query('message') message?: string,
     @Query('messageType') messageType?: string,
   ) {
     const session = (req as any).session;
-    const stations = await this.stationsService.findAll();
+    const stations = await this.stationsService.findAll(search);
     return {
       title: 'Stations Management',
       stations,
+      search,
       isLoggedIn: session?.isLoggedIn || false,
       username: session?.username || 'Guest',
       userRole: session?.role || '',

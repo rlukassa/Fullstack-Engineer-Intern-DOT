@@ -16,7 +16,15 @@ export class TrainsService {
     return this.trainsRepository.save(train);
   }
 
-  async findAll() {
+  async findAll(search?: string) {
+    if (search) {
+      return this.trainsRepository
+        .createQueryBuilder('train')
+        .where('train.name ILIKE :query', { query: `%${search}%` })
+        .orWhere('train.type ILIKE :query', { query: `%${search}%` })
+        .orderBy('train.createdAt', 'DESC')
+        .getMany();
+    }
     return this.trainsRepository.find({
       order: {
         createdAt: 'DESC',

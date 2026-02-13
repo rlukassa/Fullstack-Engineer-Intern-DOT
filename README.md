@@ -367,7 +367,7 @@ sobatkereta/
 │   │   └── entities/
 │   │       └── user.entity.ts  #    Entity: User (id, username, email, password, role, balance)
 │   │
-│   ├── trains/                 # Modul Kereta (CRUD)
+│   ├── trains/                 # Modul Kereta (CRUD + Search)
 │   │   ├── trains.controller.ts
 │   │   ├── trains.service.ts
 │   │   ├── trains.module.ts
@@ -376,7 +376,7 @@ sobatkereta/
 │   │   └── entities/
 │   │       └── train.entity.ts #    Entity: Train (id, name, type, totalSeats)
 │   │
-│   ├── stations/               # Modul Stasiun (CRUD)
+│   ├── stations/               # Modul Stasiun (CRUD + Search)
 │   │   ├── stations.controller.ts
 │   │   ├── stations.service.ts
 │   │   ├── stations.module.ts
@@ -447,42 +447,7 @@ sobatkereta/
 
 ### Entity Relationship Diagram (ERD)
 
-```
-┌────────────────────┐       ┌──────────────────────────┐       ┌────────────────────────┐
-│       USERS        │       │        SCHEDULES          │       │        TRAINS          │
-├────────────────────┤       ├──────────────────────────┤       ├────────────────────────┤
-│ id (PK)            │       │ id (PK)                  │       │ id (PK)                │
-│ username           │       │ trainId (FK) ────────────┼──────►│ name                   │
-│ email (unique)     │       │ originStationId (FK) ──┐ │       │ type                   │
-│ password (hashed)  │       │ destinationStationId ─┐│ │       │ totalSeats             │
-│ role               │       │ departureTime          ││ │       │ createdAt              │
-│ balance            │       │ arrivalTime            ││ │       │ updatedAt              │
-│ createdAt          │       │ price                  ││ │       │ deletedAt (soft)       │
-│ updatedAt          │       │ journeyStatus          ││ │       └────────────────────────┘
-└────────┬───────────┘       │ createdAt              ││ │
-         │                   │ updatedAt              ││ │       ┌────────────────────────┐
-         │                   │ deletedAt (soft)       ││ │       │       STATIONS         │
-         │ 1:N               └───────────┬────────────┘│ │       ├────────────────────────┤
-         │                               │             │ │       │ id (PK)                │
-         ▼                               │             └─┼──────►│ name                   │
-┌────────────────────────┐               │               │       │ code (unique, 3 char)  │
-│       BOOKINGS         │               │               └──────►│ createdAt              │
-├────────────────────────┤      1:N      │                       │ updatedAt              │
-│ id (PK)                │◄──────────────┘                       │ deletedAt (soft)       │
-│ userId (FK) ───────────┤                                       └────────────────────────┘
-│ scheduleId (FK)        │
-│ bookingCode (unique)   │
-│ seatCount              │
-│ totalPrice             │
-│ status                 │
-│ paidAt                 │
-│ refundReason           │
-│ refundedAt             │
-│ createdAt              │
-│ updatedAt              │
-│ deletedAt (soft)       │
-└────────────────────────┘
-```
+![Entity Relationship Diagram](public/image/Diagram%20Schema%20DOT.png)
 
 ### Relasi Antar Tabel
 
@@ -583,25 +548,25 @@ npm run start:dev
 |--------|-------|------------------------------------------------|---------------|
 | GET    | `/`   | Dashboard dengan statistik (kereta, jadwal, dll)| Authenticated|
 
-### Kereta (`/trains`) — Admin Only
+### Kereta (`/trains`) — Admin (CRUD) & Customer (View + Search)
 
-| Method | Route            | Deskripsi                      |
-|--------|------------------|--------------------------------|
-| GET    | `/trains`        | Daftar semua kereta            |
-| GET    | `/trains/:id`    | Detail kereta                  |
-| POST   | `/trains`        | Tambah kereta baru             |
-| POST   | `/trains/:id`    | Update data kereta             |
+| Method | Route            | Deskripsi                              |
+|--------|------------------|----------------------------------------|
+| GET    | `/trains`        | Daftar semua kereta (+ search query)   |
+| GET    | `/trains/:id`    | Detail kereta                          |
+| POST   | `/trains`        | Tambah kereta baru                     |
+| POST   | `/trains/:id`    | Update data kereta                     |
 | POST   | `/trains/:id/delete` | Hapus kereta (soft delete + refund) |
 
-### Stasiun (`/stations`) — Admin Only
+### Stasiun (`/stations`) — Admin (CRUD) & Customer (View + Search)
 
-| Method | Route               | Deskripsi                  |
-|--------|----------------------|----------------------------|
-| GET    | `/stations`          | Daftar semua stasiun       |
-| GET    | `/stations/:id`      | Detail stasiun             |
-| POST   | `/stations`          | Tambah stasiun baru        |
-| POST   | `/stations/:id`      | Update data stasiun        |
-| POST   | `/stations/:id/delete` | Hapus stasiun (soft delete) |
+| Method | Route               | Deskripsi                          |
+|--------|----------------------|------------------------------------|
+| GET    | `/stations`          | Daftar semua stasiun (+ search query) |
+| GET    | `/stations/:id`      | Detail stasiun                     |
+| POST   | `/stations`          | Tambah stasiun baru                |
+| POST   | `/stations/:id`      | Update data stasiun                |
+| POST   | `/stations/:id/delete` | Hapus stasiun (soft delete)      |
 
 ### Jadwal (`/schedules`) — Admin (CRUD) & Customer (View + Search)
 
@@ -636,18 +601,20 @@ npm run start:dev
 - [x] Register akun baru → Otomatis role CUSTOMER
 - [x] Akses halaman CRUD tanpa login → Redirect ke /auth/login
 
-### 2. CRUD Kereta (Admin)
+### 2. CRUD Kereta (Admin) + Pencarian
 
 - [x] Tambah kereta baru (nama, tipe: Ekonomi/Eksekutif, jumlah kursi)
 - [x] Edit data kereta yang sudah ada
 - [x] Hapus kereta → Booking terkait otomatis di-refund
 - [x] Validasi: jumlah kursi tidak boleh <= 0
+- [x] Pencarian kereta berdasarkan nama atau tipe (case-insensitive)
 
-### 3. CRUD Stasiun (Admin)
+### 3. CRUD Stasiun (Admin) + Pencarian
 
 - [x] Tambah stasiun (nama, kode 3 huruf unik)
 - [x] Edit data stasiun
 - [x] Hapus stasiun (soft delete)
+- [x] Pencarian stasiun berdasarkan nama atau kode (case-insensitive)
 
 ### 4. CRUD Jadwal + Pencarian (Admin & Customer)
 

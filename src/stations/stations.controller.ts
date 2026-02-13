@@ -57,6 +57,28 @@ export class StationsController {
     };
   }
 
+  @Post(':id/update')
+  async updateStation(@Param('id') id: number, @Body() body: any, @Req() req: Request, @Res() res: Response) {
+    const session = (req as any).session;
+
+    if (session?.role !== 'ADMIN') {
+      return res.redirect('/stations?message=Tidak memiliki akses&messageType=danger');
+    }
+
+    try {
+      const updateData: any = {};
+      if (body.name) updateData.name = body.name;
+      if (body.code) updateData.code = body.code;
+      if (body.city) updateData.city = body.city;
+      if (body.address) updateData.address = body.address;
+
+      await this.stationsService.update(Number(id), updateData);
+      return res.redirect(`/stations/${id}?message=Stasiun berhasil diperbarui&messageType=success`);
+    } catch (error: any) {
+      return res.redirect(`/stations/${id}?message=${encodeURIComponent(error.message)}&messageType=danger`);
+    }
+  }
+
   @Delete(':id')
   async remove(@Param('id') id: number, @Res() res: Response) {
     try {

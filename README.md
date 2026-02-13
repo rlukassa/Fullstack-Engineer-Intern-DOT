@@ -172,44 +172,30 @@ Aplikasi ini mengikuti pola arsitektur **MVC (Model-View-Controller)** yang diim
 
 ### Arsitektur Aplikasi
 
-```mermaid
-graph TB
-    Client[Klien Browser<br/>HTTP Request] -->|GET /trains| Controller
-    
-    subgraph NestJS["Aplikasi NestJS"]
-        subgraph Module["TrainsModule"]
-            Controller[TrainsController<br/>@Controller]
-            Service[TrainsService<br/>@Injectable]
-            Repository[Repository<br/>TypeORM]
-        end
-        
-        subgraph Database["PostgreSQL"]
-            TrainTable[tabel trains]
-        end
-        
-        subgraph Views["Template Handlebars"]
-            Layout[layouts/main.hbs]
-            TrainView[trains/index.hbs]
-            Partials[partials/sidebar.hbs<br/>partials/modals.hbs]
-        end
-    end
-    
-    Controller -->|inject| Service
-    Service -->|@InjectRepository| Repository
-    Repository <-->|Query SQL| TrainTable
-    Service -->|kembalikan data| Controller
-    Controller -->|@Render| TrainView
-    TrainView -->|extends| Layout
-    TrainView -->|includes| Partials
-    Layout -->|Response HTML| Client
-    
-    style Client fill:#e1f5fe
-    style Controller fill:#fff3e0
-    style Service fill:#e8f5e8
-    style Repository fill:#f3e5f5
-    style TrainTable fill:#ffe0e0
-    style TrainView fill:#f0f4c3
-```
+Aplikasi menggunakan arsitektur MVC dengan alur sebagai berikut:
+
+**1. Klien Browser** mengirim HTTP Request `GET /trains`
+
+**2. TrainsController** menerima request dan memproses dengan:
+   - Menggunakan decorator `@Controller('trains')` 
+   - Method handler dengan `@Get()` dan `@Render('trains/index')`
+   - Inject TrainsService melalui constructor
+
+**3. TrainsService** melakukan logika bisnis:
+   - Menggunakan decorator `@Injectable()`
+   - Inject Repository dengan `@InjectRepository(Train)`
+   - Memanggil method database seperti `trainRepo.find()`
+
+**4. Repository TypeORM** menjalankan query SQL:
+   - Melakukan `SELECT * FROM trains` ke database PostgreSQL
+   - Mengembalikan data ke service
+
+**5. Template Handlebars** merender response:
+   - Controller menggunakan `@Render()` untuk memanggil template
+   - Template `trains/index.hbs` menggunakan layout `main.hbs`
+   - Include partials seperti `sidebar.hbs` dan `modals.hbs`
+
+**6. Klien Browser** menerima HTML response dan menampilkan halaman
 
 ### Alur Dependensi Import
 

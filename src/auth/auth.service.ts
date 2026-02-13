@@ -29,6 +29,14 @@ export class AuthService {
   ) {}
 
   async register(body: { username: string; email: string; password: string }) {
+    const hardcodedConflict = HARDCODED_ACCOUNTS.find(
+      (account) => account.email === body.email || account.username === body.username,
+    );
+
+    if (hardcodedConflict) {
+      throw new Error('User dengan email atau username tersebut sudah ada.');
+    }
+
     const existingUser = await this.usersRepository.findOne({
       where: [{ email: body.email }, { username: body.username }],
     });

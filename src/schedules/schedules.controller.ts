@@ -104,7 +104,6 @@ export class SchedulesController {
     const session = (req as any).session;
     let schedules;
     
-    // Auto update journey statuses
     await this.schedulesService.updateAllJourneyStatuses();
     
     if (search) {
@@ -113,7 +112,6 @@ export class SchedulesController {
       schedules = await this.schedulesService.findAll();
     }
 
-    // Get trains and stations for admin form
     const trains = await this.trainsService.findAll();
     const stations = await this.stationsService.findAll();
     
@@ -143,21 +141,14 @@ export class SchedulesController {
   ) {
     const session = (req as any).session;
     
-    // Auto update journey statuses
     await this.schedulesService.updateAllJourneyStatuses();
-    
     const schedule = await this.schedulesService.findOne(Number(id));
-    
-    // Get seat availability
     const seatInfo = schedule ? await this.bookingsService.getAvailableSeats(Number(id)) : null;
-    
-    // Check if user has an active booking for this schedule
     let userActiveBooking: any = null;
     if (session?.userId && schedule) {
       userActiveBooking = await this.bookingsService.findActiveBookingByUserAndSchedule(session.userId, Number(id));
     }
-    
-    // Get trains and stations for admin edit form
+     
     const trains = await this.trainsService.findAll();
     const stations = await this.stationsService.findAll();
     

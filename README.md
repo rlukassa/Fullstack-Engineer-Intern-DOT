@@ -170,51 +170,122 @@
 
 Aplikasi ini mengikuti pola arsitektur **MVC (Model-View-Controller)** yang diimplementasikan melalui konvensi NestJS:
 
+### Arsitektur Aplikasi
+
+```mermaid
+graph TB
+    Client[Klien Browser<br/>HTTP Request] -->|GET /trains| Controller
+    
+    subgraph NestJS["Aplikasi NestJS"]
+        subgraph Module["TrainsModule"]
+            Controller[TrainsController<br/>@Controller]
+            Service[TrainsService<br/>@Injectable]
+            Repository[Repository<br/>TypeORM]
+        end
+        
+        subgraph Database["PostgreSQL"]
+            TrainTable[tabel trains]
+        end
+        
+        subgraph Views["Template Handlebars"]
+            Layout[layouts/main.hbs]
+            TrainView[trains/index.hbs]
+            Partials[partials/sidebar.hbs<br/>partials/modals.hbs]
+        end
+    end
+    
+    Controller -->|inject| Service
+    Service -->|@InjectRepository| Repository
+    Repository <-->|Query SQL| TrainTable
+    Service -->|kembalikan data| Controller
+    Controller -->|@Render| TrainView
+    TrainView -->|extends| Layout
+    TrainView -->|includes| Partials
+    Layout -->|Response HTML| Client
+    
+    style Client fill:#e1f5fe
+    style Controller fill:#fff3e0
+    style Service fill:#e8f5e8
+    style Repository fill:#f3e5f5
+    style TrainTable fill:#ffe0e0
+    style TrainView fill:#f0f4c3
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                         CLIENT (Browser)                        │
-│                    GET /schedules ──────────►                   │
-│                    ◄────────────── HTML Page                    │
-└──────────────────────────┬──────────────────────────────────────┘
-                           │
-                           ▼
-┌──────────────────────────────────────────────────────────────────┐
-│  CONTROLLER (schedules.controller.ts)                           │
-│  ┌────────────────────────────────────────────────────────────┐  │
-│  │ @Controller('schedules')                                   │  │
-│  │ @Get() @Render('schedules/index')                          │  │
-│  │ → Menerima request, panggil service, kirim data ke view   │  │
-│  └──────────────────────────┬─────────────────────────────────┘  │
-│                             │                                    │
-│                             ▼                                    │
-│  SERVICE / MODEL (schedules.service.ts)                          │
-│  ┌────────────────────────────────────────────────────────────┐  │
-│  │ @Injectable()                                              │  │
-│  │ → Business logic + interaksi database via TypeORM          │  │
-│  │ → Repository pattern: this.scheduleRepo.find(...)          │  │
-│  └──────────────────────────┬─────────────────────────────────┘  │
-│                             │                                    │
-│                             ▼                                    │
-│  VIEW (views/schedules/index.hbs)                                │
-│  ┌────────────────────────────────────────────────────────────┐  │
-│  │ Handlebars template                                        │  │
-│  │ → Render data menjadi halaman HTML                         │  │
-│  │ → Layout: main.hbs | Partials: sidebar, modals, popup     │  │
-│  └────────────────────────────────────────────────────────────┘  │
-└──────────────────────────────────────────────────────────────────┘
+
+### Alur Dependensi Import
+
 ```
+src/trains/
+├── trains.module.ts
+│   ├── imports: TypeOrmModule.forFeature([Train])
+│   ├── controllers: [TrainsController]
+│   └── providers: [TrainsService]
+│
+├── trains.controller.ts
+│   ├── import { TrainsService } from './trains.service'
+│   ├── import { CreateTrainDto } from './dto/create-train.dto'
+│   └── constructor(private trainsService: TrainsService)
+│
+├── trains.service.ts
+│   ├── import { Injectable, InjectRepository } from '@nestjs/common'
+│   ├── import { Repository } from 'typeorm'
+│   ├── import { Train } from './entities/train.entity'
+│   └── constructor(@InjectRepository(Train) private trainRepo: Repository<Train>)
+│
+├── entities/train.entity.ts
+│   ├── import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm'
+│   ├── import { Schedule } from '../../schedules/entities/schedule.entity'
+│   └── @Entity('trains') class Train
+│
+└── dto/create-train.dto.ts
+    └── export class CreateTrainDto { name, type, totalSeats }
+```
+
+### Alur Request-Response
+
+```
+KLIEN           CONTROLLER         SERVICE           DATABASE
+(Browser)       (Pengatur HTTP)    (Logika Bisnis)   (PostgreSQL)
+    |                 |                 |                |
+    | GET /trains     |                 |                |
+    |---------------->|                 |                |
+    |                 | findAll()       |                |
+    |                 |---------------->|                |
+    |                 |                 | find()         |
+    |                 |                 |--------------->|
+    |                 |                 |                |
+    |                 |                 |<---------------|
+    |                 |                 | SELECT * FROM  |
+    |                 |<----------------|  trains        |
+    |                 | Array Train[]   |                |
+    |<----------------|                 |                |
+    | Response HTML   | @Render() +     |                |
+    |                 | data template   |                |
+```
+
+### Detail Interaksi Komponen
+
+| Langkah | Komponen | Aksi | Input | Output |
+|---------|----------|------|-------|--------|
+| 1    | Klien | HTTP Request | GET /trains | - |
+| 2    | Controller | Pengaturan Route | Object Request | Panggil method service |
+| 3    | Service | Logika Bisnis | Parameter Method | Kembalikan data terproses |
+| 4    | Repository | Query Database | Method TypeORM | Data mentah dari DB |
+| 5    | Service | Pemrosesan Data | Hasil DB | Data yang sudah diformat |
+| 6    | Controller | Rendering Response | Data service + template | - |
+| 7    | View Engine | Pemrosesan Template | Data + template .hbs | HTML yang dihasilkan |
+| 8    | Klien | Terima Response | Konten HTML | Tampilkan halaman |
 
 ### Penjelasan Integrasi NestJS dengan MVC
 
 | Komponen MVC | Implementasi di NestJS                | Contoh File                        |
 |-------------|---------------------------------------|------------------------------------|
-| **Model**   | Entity + Service (business logic)     | `train.entity.ts`, `trains.service.ts`   |
+| **Model**   | Entity + Service (logika bisnis)      | `train.entity.ts`, `trains.service.ts`   |
 | **View**    | Template Handlebars (.hbs)            | `views/trains/index.hbs`           |
-| **Controller** | Controller class dengan decorator  | `trains.controller.ts`             |
+| **Controller** | Class Controller dengan decorator  | `trains.controller.ts`             |
 
-#### 1. **Controller** — Menangani Request & Response
+#### 1. Controller — Menangani Request & Response
 
-Controller bertanggung jawab menerima HTTP request dari client, memanggil service untuk memproses data, dan mengembalikan response berupa halaman HTML melalui decorator `@Render()`.
+Controller bertanggung jawab menerima HTTP request dari klien, memanggil service untuk memproses data, dan mengembalikan response berupa halaman HTML melalui decorator `@Render()`.
 
 ```typescript
 @Controller('trains')
@@ -230,9 +301,9 @@ export class TrainsController {
 }
 ```
 
-#### 2. **Service (Model)** — Business Logic & Database
+#### 2. Service (Model) — Logika Bisnis & Database
 
-Service berisi seluruh business logic dan berinteraksi langsung dengan database melalui TypeORM Repository pattern. Service di-inject ke controller via **Dependency Injection**.
+Service berisi seluruh logika bisnis dan berinteraksi langsung dengan database melalui TypeORM Repository pattern. Service di-inject ke controller melalui **Dependency Injection**.
 
 ```typescript
 @Injectable()

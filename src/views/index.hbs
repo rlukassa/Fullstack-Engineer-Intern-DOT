@@ -1,11 +1,9 @@
 {{#if isLoggedIn}}
-<!-- ============ LOGGED-IN DASHBOARD ============ -->
 <div class="page-header">
     <h1><i class="fas fa-th-large"></i> Dashboard</h1>
     <p>Selamat datang kembali, {{username}}!</p>
 </div>
 
-<!-- Stats Grid -->
 <div class="grid grid-4" style="margin-bottom: 28px;">
     <div class="stat-card" style="animation-delay: 0.05s;">
         <div class="icon blue"><i class="fas fa-train"></i></div>
@@ -29,7 +27,6 @@
     </div>
 </div>
 
-<!-- Quick Actions -->
 <div class="card" style="margin-bottom: 28px;">
     <div class="card-header">
         <h3 class="card-title"><i class="fas fa-bolt"></i> Aksi Cepat</h3>
@@ -42,7 +39,6 @@
     </div>
 </div>
 
-<!-- Recent Data -->
 <div class="grid grid-2">
     <div class="card">
         <div class="card-header">
@@ -100,11 +96,9 @@
 </div>
 
 {{else}}
-<!-- ============ GUEST LANDING PAGE ============ -->
 <style>
     .landing-wrapper { margin: -28px -32px; overflow-x: hidden; }
 
-    /* --- Hero Section --- */
     .hero-section {
         display: flex;
         align-items: center;
@@ -168,7 +162,6 @@
         transform: translateY(-2px);
     }
 
-    /* Hero Image Carousel */
     .hero-visual { flex: 1; z-index: 2; position: relative; }
     .carousel-container {
         position: relative;
@@ -212,7 +205,6 @@
         border-radius: 5px;
     }
 
-    /* Subtle background decoration */
     .hero-section::before {
         content: '';
         position: absolute;
@@ -230,7 +222,6 @@
         border-radius: 50%;
     }
 
-    /* --- Clients / Partners Section --- */
     .clients-section {
         padding: 40px 64px;
         text-align: center;
@@ -267,7 +258,6 @@
     .client-logo:hover { opacity: 0.8; }
     .client-logo i { font-size: 1.5rem; }
 
-    /* --- Features Section --- */
     .features-section {
         padding: 80px 64px;
         text-align: center;
@@ -332,7 +322,6 @@
         line-height: 1.6;
     }
 
-    /* --- Stats Section --- */
     .stats-section {
         padding: 60px 64px;
         background: linear-gradient(135deg, #3b82f6, #2563eb);
@@ -359,7 +348,6 @@
         margin-top: 4px;
     }
 
-    /* --- CTA Section --- */
     .cta-section {
         padding: 80px 64px;
         text-align: center;
@@ -407,7 +395,6 @@
         transform: translateY(-2px);
     }
 
-    /* --- Landing Footer --- */
     .landing-footer {
         padding: 24px 64px;
         border-top: 1px solid var(--border);
@@ -487,7 +474,6 @@
 </style>
 
 <div class="landing-wrapper">
-    <!-- Hero Section -->
     <section class="hero-section">
         <div class="hero-content">
             <h1>Perjalanan Kereta <span>Tanpa Ribet</span>, Pesan Dalam Hitungan Detik</h1>
@@ -525,7 +511,6 @@
         </div>
     </section>
 
-    <!-- Clients/Partners -->
     <section class="clients-section">
         <p>Dipercaya oleh operator kereta api terkemuka</p>
         <div class="clients-grid">
@@ -537,7 +522,6 @@
         </div>
     </section>
 
-    <!-- Features Section -->
     <section class="features-section">
         <h2 class="section-title">Kenapa SobatKereta?</h2>
         <p class="section-subtitle">Platform pemesanan tiket kereta yang dirancang untuk kemudahan dan kecepatan Anda</p>
@@ -560,7 +544,6 @@
         </div>
     </section>
 
-    <!-- Stats Section -->
     <section class="stats-section">
         <h2 class="section-title">Angka Bicara</h2>
         <p class="section-subtitle">SobatKereta dalam angka yang membuktikan kualitas layanan</p>
@@ -580,7 +563,6 @@
         </div>
     </section>
 
-    <!-- CTA Section -->
     <section class="cta-section">
         <div class="cta-card">
             <h2>Siap Memesan Tiket?</h2>
@@ -591,7 +573,6 @@
         </div>
     </section>
 
-    <!-- Footer -->
     <footer class="landing-footer">
         <p>&copy; 2026 SobatKereta. All rights reserved.</p>
         <div class="landing-footer-links">

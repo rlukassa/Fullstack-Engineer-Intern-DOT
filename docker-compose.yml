@@ -10,6 +10,7 @@ services:
     environment:
       NODE_ENV: development
       PORT: 3000
+      TZ: Asia/Jakarta
       DATABASE_HOST: db
       DATABASE_PORT: 5432
       DATABASE_USER: admin
@@ -27,10 +28,12 @@ services:
     image: postgres:15-alpine
     container_name: postgres_db
     restart: always
+    command: postgres -c timezone=Asia/Jakarta
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: 12345
       POSTGRES_DB: db
+      TZ: Asia/Jakarta
     ports:
       - "5432:5432"
     volumes:

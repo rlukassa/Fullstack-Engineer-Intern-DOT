@@ -34,10 +34,10 @@ export class Schedule {
   @Column()
   destinationStationId: number;
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'timestamptz' })
   departureTime: Date;
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'timestamptz' })
   arrivalTime: Date;
 
   @Column({ type: 'int' })
@@ -61,12 +61,12 @@ export class Schedule {
   @OneToMany(() => Booking, (booking) => booking.schedule)
   bookings: Booking[];
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date;
 
-  @DeleteDateColumn()
+  @DeleteDateColumn({ type: 'timestamptz' })
   deletedAt: Date;
 }

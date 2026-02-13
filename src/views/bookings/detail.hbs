@@ -37,7 +37,6 @@
         </div>
     </div>
     
-    <!-- Payment Alert for Pending -->
     {{#if (eq booking.status "PENDING")}}
     {{#if (eq booking.schedule.journeyStatus "BELUM_BERANGKAT")}}
     <div style="padding: 16px; background: var(--warning-light); border: 1px solid rgba(251, 191, 36, 0.3); border-radius: var(--radius-lg); margin-bottom: 24px;">
@@ -76,7 +75,6 @@
     </div>
     {{/if}}
 
-    <!-- Booking Summary -->
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px;">
         <div style="padding: 16px; background: var(--primary-light); border-radius: var(--radius-lg); text-align: center;">
             <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Kursi Dipesan</div>
@@ -92,7 +90,6 @@
         </div>
     </div>
 
-    <!-- Train Info -->
     <div style="margin-bottom: 24px;">
         <h4 style="color: var(--text-muted); margin-bottom: 12px; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em;"><i class="fas fa-train"></i> Informasi Kereta</h4>
         <div style="display: flex; align-items: center; gap: 16px; padding: 16px; background: var(--primary-light); border-radius: var(--radius-lg);">
@@ -106,7 +103,6 @@
         </div>
     </div>
     
-    <!-- Route Info -->
     <div style="margin-bottom: 24px;">
         <h4 style="color: var(--text-muted); margin-bottom: 12px; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em;"><i class="fas fa-route"></i> Informasi Rute</h4>
         <div class="route-display" style="display: flex; align-items: center; gap: 16px;">
@@ -128,7 +124,6 @@
         </div>
     </div>
     
-    <!-- Time Info -->
     <div style="margin-bottom: 24px;">
         <h4 style="color: var(--text-muted); margin-bottom: 12px; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em;"><i class="fas fa-clock"></i> Waktu Perjalanan</h4>
         <div class="time-grid-responsive" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
@@ -143,7 +138,6 @@
         </div>
     </div>
 
-    <!-- Passenger Info -->
     {{#if booking.user}}
     <div style="margin-bottom: 24px;">
         <h4 style="color: var(--text-muted); margin-bottom: 12px; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em;"><i class="fas fa-user"></i> Informasi Penumpang</h4>
@@ -151,7 +145,7 @@
             <div class="passenger-grid-responsive" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                 <div>
                     <span style="color: var(--text-muted); font-size: 0.8125rem;">Nama:</span>
-                    <span style="color: var(--text-primary); margin-left: 8px; font-weight: 500;">{{booking.user.name}}</span>
+                    <span style="color: var(--text-primary); margin-left: 8px; font-weight: 500;">{{booking.user.username}}</span>
                 </div>
                 <div>
                     <span style="color: var(--text-muted); font-size: 0.8125rem;">Email:</span>
@@ -162,7 +156,6 @@
     </div>
     {{/if}}
 
-    <!-- E-Ticket -->
     {{#if (eq booking.status "CONFIRMED")}}
     <div style="margin-top: 24px; padding: 24px; background: linear-gradient(135deg, var(--primary-light), rgba(139, 92, 246, 0.15)); border-radius: var(--radius-lg); border: 2px dashed var(--border);">
         <div style="text-align: center;">
@@ -176,7 +169,6 @@
     </div>
     {{/if}}
     
-    <!-- Actions for Pending -->
     {{#if (eq booking.status "PENDING")}}
     {{#if (eq booking.schedule.journeyStatus "BELUM_BERANGKAT")}}
     <div style="display: flex; gap: 12px; justify-content: center; margin-top: 24px;">
@@ -205,7 +197,6 @@
 </div>
 {{/if}}
 
-<!-- Cancel Booking Modal -->
 <div class="modal-overlay" id="cancelModal">
     <div class="modal">
         <div class="modal-header">

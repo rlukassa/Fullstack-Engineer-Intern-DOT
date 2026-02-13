@@ -25,13 +25,11 @@ export class AppController {
   ) {
     const session = (req as any).session;
     
-    // Fetch data for dashboard
     const trains = await this.trainsService.findAll();
     const schedules = await this.schedulesService.findAll();
     const stations = await this.stationsService.findAll();
     const bookings = await this.bookingsService.findAll();
     
-    // Get recent items (last 5)
     const recentTrains = trains.slice(0, 5);
     const recentSchedules = schedules.slice(0, 5);
     
@@ -44,12 +42,10 @@ export class AppController {
       message,
       messageType,
       activePage: { home: true },
-      // Stats
       trainsCount: trains.length,
       schedulesCount: schedules.length,
       stationsCount: stations.length,
       bookingsCount: bookings.length,
-      // Recent data
       recentTrains,
       recentSchedules,
     };

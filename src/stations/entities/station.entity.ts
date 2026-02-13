@@ -26,12 +26,12 @@ export class Station {
   @OneToMany(() => Schedule, (schedule) => schedule.destinationStation)
   arrivalSchedules: Schedule[];
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date;
 
-  @DeleteDateColumn()
+  @DeleteDateColumn({ type: 'timestamptz' })
   deletedAt: Date;
 }

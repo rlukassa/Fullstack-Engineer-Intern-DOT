@@ -50,7 +50,7 @@
                     <th>Nama Kereta</th>
                     <th>Tipe</th>
                     <th>Total Kursi</th>
-                    <th>Dibuat</th>
+                    <th>Diperbarui</th>
                     {{#if (eq ../userRole "ADMIN")}}
                     <th>Aksi</th>
                     {{/if}}
@@ -78,7 +78,7 @@
                         {{/if}}
                     </td>
                     <td>{{this.totalSeats}} kursi</td>
-                    <td style="color: var(--text-muted);">{{formatDate this.createdAt}}</td>
+                    <td style="color: var(--text-muted);">{{formatDate this.updatedAt}}</td>
                     {{#if (eq ../userRole "ADMIN")}}
                     <td>
                         <div class="action-btns">
@@ -105,7 +105,6 @@
     {{/if}}
 </div>
 
-<!-- Delete Confirmation Modal -->
 <div class="modal-overlay" id="deleteModal">
     <div class="modal">
         <div class="modal-header">

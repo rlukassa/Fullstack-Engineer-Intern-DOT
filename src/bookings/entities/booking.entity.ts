@@ -41,13 +41,13 @@ export class Booking {
   @Column({ type: 'varchar', default: BookingStatus.PENDING })
   status: BookingStatus; // PENDING / CONFIRMED / CANCELLED
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'timestamptz', nullable: true })
   paidAt: Date; // Waktu pembayaran
 
   @Column({ type: 'varchar', nullable: true })
   refundReason: string; // Alasan refund (jika dibatalkan oleh admin)
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'timestamptz', nullable: true })
   refundedAt: Date; // Waktu refund
 
   @ManyToOne(() => User, (user) => user.bookings)
@@ -58,12 +58,12 @@ export class Booking {
   @JoinColumn({ name: 'scheduleId' })
   schedule: Schedule;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date;
 
-  @DeleteDateColumn()
+  @DeleteDateColumn({ type: 'timestamptz' })
   deletedAt: Date;
 }

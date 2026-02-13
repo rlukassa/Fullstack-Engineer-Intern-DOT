@@ -59,7 +59,6 @@
 </div>
 {{/if}}
 
-<!-- Search Box -->
 <div class="card" style="margin-bottom: 20px;">
     <form action="/schedules" method="GET">
         <div class="search-box" style="margin: 0;">
@@ -169,7 +168,6 @@
     {{/if}}
 </div>
 
-<!-- Booking Modal -->
 {{#if isLoggedIn}}
 {{#if (not (eq userRole "ADMIN"))}}
 <div class="modal-overlay" id="bookingModal">
@@ -209,7 +207,6 @@
 {{/if}}
 {{/if}}
 
-<!-- Delete Confirmation Modal -->
 <div class="modal-overlay" id="deleteModal">
     <div class="modal">
         <div class="modal-header">

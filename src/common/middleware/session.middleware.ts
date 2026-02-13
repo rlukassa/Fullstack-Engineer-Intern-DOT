@@ -16,7 +16,6 @@ declare module 'express-session' {
 @Injectable()
 export class SessionMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
-    // Pass session data to views via res.locals
     if (req.session) {
       res.locals.isLoggedIn = req.session.isLoggedIn || false;
       res.locals.username = req.session.username || 'Guest';

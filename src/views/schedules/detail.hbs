@@ -27,7 +27,6 @@
         {{/if}}
     </div>
     
-    <!-- Train Info -->
     <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px; padding: 16px; background: var(--primary-light); border-radius: var(--radius-lg);">
         <div style="width: 48px; height: 48px; background: var(--bg-surface); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center;">
             <i class="fas fa-train" style="font-size: 1.25rem; color: var(--primary);"></i>
@@ -41,7 +40,6 @@
         </div>
     </div>
 
-    <!-- Seat Availability -->
     {{#if seatInfo}}
     <div style="margin-bottom: 24px; padding: 16px; background: var(--bg-elevated); border-radius: var(--radius-lg); border: 1px solid var(--border);">
         <h4 style="color: var(--primary); margin-bottom: 12px; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em;"><i class="fas fa-chair"></i> Ketersediaan Kursi</h4>
@@ -68,7 +66,6 @@
     </div>
     {{/if}}
 
-    <!-- Admin: Journey Status -->
     {{#if (eq userRole "ADMIN")}}
     <div style="margin-bottom: 24px; padding: 16px; background: var(--bg-elevated); border-radius: var(--radius-lg); border: 1px solid var(--border);">
         <h4 style="color: var(--text-secondary); margin-bottom: 12px; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em;"><i class="fas fa-cog"></i> Kelola Status Perjalanan</h4>
@@ -94,7 +91,6 @@
         </div>
     </div>
 
-    <!-- Admin: Edit Schedule -->
     <div style="margin-bottom: 24px; padding: 16px; background: var(--bg-elevated); border-radius: var(--radius-lg); border: 1px solid var(--border);">
         <h4 style="color: var(--text-secondary); margin-bottom: 4px; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em;"><i class="fas fa-edit"></i> Edit Jadwal</h4>
         <p style="color: var(--text-muted); font-size: 0.8125rem; margin-bottom: 16px;">
@@ -146,7 +142,6 @@
     </div>
     {{/if}}
     
-    <!-- Route Info -->
     <div style="margin-bottom: 24px;">
         <h4 style="color: var(--text-muted); margin-bottom: 12px; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em;"><i class="fas fa-route"></i> Informasi Rute</h4>
         <div class="route-display" style="display: flex; align-items: center; gap: 16px;">
@@ -168,7 +163,6 @@
         </div>
     </div>
     
-    <!-- Time Info -->
     <div style="margin-bottom: 24px;">
         <h4 style="color: var(--text-muted); margin-bottom: 12px; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em;"><i class="fas fa-clock"></i> Informasi Waktu</h4>
         <div class="time-grid-responsive" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
@@ -183,7 +177,6 @@
         </div>
     </div>
     
-    <!-- Price -->
     <div style="margin-bottom: 24px;">
         <h4 style="color: var(--text-muted); margin-bottom: 12px; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em;"><i class="fas fa-tag"></i> Harga</h4>
         <div style="padding: 20px; background: var(--success-light); border-radius: var(--radius-lg); text-align: center;">
@@ -193,12 +186,10 @@
         </div>
     </div>
     
-    <!-- Booking CTA -->
     {{#if isLoggedIn}}
         {{#if (not (eq userRole "ADMIN"))}}
             {{#if (eq schedule.journeyStatus "BELUM_BERANGKAT")}}
                 {{#if userActiveBooking}}
-                <!-- User already has an active booking for this schedule -->
                 <div style="text-align: center; padding: 20px; background: var(--primary-light); border-radius: var(--radius-lg); border: 1px solid rgba(59, 130, 246, 0.3);">
                     <i class="fas fa-ticket-alt" style="color: var(--primary); font-size: 1.5rem; margin-bottom: 8px;"></i>
                     {{#if (eq userActiveBooking.status "PENDING")}}
@@ -244,7 +235,6 @@
     {{/if}}
 </div>
 
-<!-- Booking Modal -->
 {{#if isLoggedIn}}
 {{#if (not (eq userRole "ADMIN"))}}
 {{#if (gt seatInfo.available 0)}}
